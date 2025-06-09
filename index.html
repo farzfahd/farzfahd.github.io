@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Ekonomi & Sosiologi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrolling on results */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #app-container {
+            background-color: #ffffff;
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            max-width: 900px; /* Increased max width */
+            width: 100%;
+            margin-top: 20px;
+        }
+        .option-button {
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .option-button:hover:not(.selected):not(.correct):not(.incorrect) {
+            background-color: #e2e8f0; /* bg-blue-100 equivalent */
+        }
+        .option-button.selected {
+            border-color: #3b82f6; /* ring-blue-500 equivalent */
+            background-color: #bfdbfe; /* bg-blue-200 equivalent */
+        }
+        .option-button.correct {
+            background-color: #d1fae5; /* bg-green-100 equivalent */
+            border-color: #10b981; /* ring-green-500 equivalent */
+        }
+        .option-button.incorrect {
+            background-color: #fee2e2; /* bg-red-100 equivalent */
+            border-color: #ef4444; /* ring-red-500 equivalent */
+        }
+        .feedback-icon {
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+        .feedback-text {
+            color: #4a5568; /* text-gray-700 */
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .correct-text {
+            color: #10b981; /* green-500 */
+        }
+        .incorrect-text {
+            color: #ef4444; /* red-500 */
+        }
+        /* Markdown rendering adjustments */
+        #question-text p {
+            margin-bottom: 0.5em;
+        }
+        #question-text ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        #question-text ol {
+            list-style-type: decimal;
+            margin-left: 20px;
+        }
+        #question-text table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        #question-text th, #question-text td {
+            border: 1px solid #e2e8f0; /* gray-200 */
+            padding: 8px;
+            text-align: left;
+        }
+        #question-text th {
+            background-color: #f7fafc; /* gray-50 */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #app-container {
+                padding: 1.5rem;
+                margin-top: 10px;
+            }
+            .main-button {
+                padding: 1rem 1.5rem;
+                font-size: 1.125rem;
+            }
+            .option-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+            .feedback-icon {
+                font-size: 1.25rem;
+            }
+            .feedback-text {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body class="selection:bg-blue-300 selection:text-white">
+    <div id="app-container" class="relative">
+
+        <!-- Home Screen -->
+        <div id="home-screen" class="flex flex-col items-center justify-center p-8 gap-6">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-8 text-center leading-tight">
+                Pilih Mata Pelajaran Kuis
+            </h1>
+            <div class="flex flex-col md:flex-row gap-6 w-full justify-center">
+                <button id="start-ekonomi" class="main-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transform transition duration-300 hover:scale-105 w-full md:w-auto">
+                    Kuis Ekonomi
+                </button>
+                <button id="start-sosiologi" class="main-button bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transform transition duration-300 hover:scale-105 w-full md:w-auto">
+                    Kuis Sosiologi
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden flex flex-col p-8">
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-2"><span id="question-counter"></span></p>
+                <div id="question-text" class="text-xl font-medium text-gray-800 mb-6 leading-relaxed"></div>
+            </div>
+
+            <div id="options-container" class="flex flex-col gap-4 mb-6">
+                <!-- Options will be loaded here by JavaScript -->
+            </div>
+
+            <div id="feedback-area" class="min-h-[100px] bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 text-gray-700 transition-all duration-300 ease-in-out">
+                <!-- Feedback and explanation will be shown here -->
+            </div>
+
+            <button id="next-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-end w-full md:w-auto opacity-50 cursor-not-allowed" disabled>
+                Lanjut
+            </button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden flex flex-col items-center justify-center p-8 text-center">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-6">Hasil Kuis Anda!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left w-full max-w-md mb-8">
+                <div class="bg-green-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-green-600 font-bold" id="correct-score">0</span>
+                    <span class="text-lg text-green-800">Benar</span>
+                </div>
+                <div class="bg-red-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-red-600 font-bold" id="incorrect-score">0</span>
+                    <span class="text-lg text-red-800">Salah</span>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-yellow-600 font-bold" id="skipped-score">0</span>
+                    <span class="text-lg text-yellow-800">Dikosongi</span>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-4 w-full max-w-md justify-center">
+                <button id="review-button" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto">
+                    Tinjau Jawaban
+                </button>
+                <button id="restart-button" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto">
+                    Mulai Ulang Kuis
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="review-screen" class="hidden flex flex-col p-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-6 text-center">Tinjauan Kuis</h2>
+            <div id="review-container" class="flex flex-col gap-8">
+                <!-- Reviewed questions will be loaded here -->
+            </div>
+            <button id="back-to-home-from-review" class="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-center w-full md:w-auto">
+                Kembali ke Beranda
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Data Soal Ekonomi
+        const ekonomiQuestions = [
+            {
+                question: "Berikut ini yang merupakan contoh bank swasta nasional adalah...",
+                options: ["Bank Mandiri", "Bank Rakyat Indonesia (BRI)", "Bank Central Asia (BCA)", "Bank Negara Indonesia (BNI)", "Bank Syariah Indonesia (BSI)"],
+                correctAnswerIndex: 2,
+                explanation: "Bank Central Asia (BCA) adalah salah satu contoh bank swasta nasional terbesar di Indonesia, sedangkan Bank Mandiri, BRI, BNI, dan BSI adalah bank BUMN atau gabungan BUMN."
+            },
+            {
+                question: "Salah satu dampak negatif yang mungkin timbul dari pengajuan kredit yang berlebihan adalah...",
+                options: ["Meningkatkan pendapatan individu", "Mendorong pertumbuhan ekonomi", "Terjerat utang dan kesulitan finansial", "Memudahkan investasi jangka panjang", "Meningkatkan daya beli masyarakat"],
+                correctAnswerIndex: 2,
+                explanation: "Pengajuan kredit yang berlebihan dapat menyebabkan individu terjerat utang dan mengalami kesulitan finansial jika tidak mampu melunasi kewajibannya."
+            },
+            {
+                question: "Jika seseorang ingin menyimpan uangnya agar aman dan mendapatkan bunga, produk bank yang paling sesuai adalah...",
+                options: ["Kredit Investasi", "Tabungan", "Deposito", "Giro", "Letter of Credit"],
+                correctAnswerIndex: 2,
+                explanation: "Deposito adalah produk simpanan berjangka di bank yang memberikan bunga lebih tinggi dibandingkan tabungan biasa dan memiliki jatuh tempo tertentu."
+            },
+            {
+                question: "Perbedaan mendasar antara saham dan obligasi terletak pada...",
+                options: ["Obligasi memberikan hak kepemilikan, sedangkan saham adalah bukti utang.", "Saham memberikan bunga, sedangkan obligasi memberikan dividen.", "Saham memberikan hak kepemilikan, sedangkan obligasi adalah bukti utang.", "Keduanya adalah bukti kepemilikan perusahaan.", "Keduanya adalah bukti utang jangka pendek."],
+                correctAnswerIndex: 2,
+                explanation: "Saham adalah bukti kepemilikan sebagian perusahaan, sementara obligasi adalah surat utang yang diterbitkan oleh perusahaan atau pemerintah."
+            },
+            {
+                question: "Menurut UU No. 21 Tahun 2011, Lembaga Keuangan didefinisikan sebagai...",
+                options: ["Badan usaha yang bergerak di bidang perdagangan.", "Perusahaan yang hanya menerima simpanan nasabah.", "Lembaga yang melakukan kegiatan di sektor pasar modal.", "Lembaga yang melaksanakan kegiatan di sektor jasa keuangan.", "Perusahaan yang memberikan pinjaman tanpa bunga."],
+                correctAnswerIndex: 3,
+                explanation: "Menurut UU No. 21 Tahun 2011 tentang OJK, Lembaga Jasa Keuangan adalah lembaga yang melaksanakan kegiatan di sektor jasa keuangan."
+            },
+            {
+                question: "Prinsip perbankan syariah yang melarang praktik riba adalah prinsip...",
+                options: ["Kehati-hatian", "Bagi hasil (Mudharabah)", "Transparansi", "Keadilan", "Amanah"],
+                correctAnswerIndex: 1,
+                explanation: "Prinsip bagi hasil (Mudharabah, Musyarakah, dll.) merupakan salah satu prinsip utama perbankan syariah yang menggantikan sistem bunga (riba)."
+            },
+            {
+                question: "Berdasarkan kepemilikannya, bank yang mayoritas sahamnya dimiliki oleh swasta disebut bank...",
+                options: ["Bank Umum Pemerintah", "Bank Sentral", "Bank Swasta Nasional", "Bank Campuran", "Bank Asing"],
+                correctAnswerIndex: 2,
+                explanation: "Bank Swasta Nasional adalah bank yang sebagian besar modalnya dimiliki oleh pihak swasta dalam negeri."
+            },
+            {
+                question: "Produk perbankan yang termasuk dalam 'kredit pasif' adalah...",
+                options: ["Kredit Modal Kerja", "Kredit Investasi", "Deposito Berjangka", "Kredit Konsumsi", "Kredit Serbaguna"],
+                correctAnswerIndex: 2,
+                explanation: "Kredit pasif adalah bentuk penghimpunan dana dari masyarakat oleh bank, seperti tabungan, giro, dan deposito."
+            },
+            {
+                question: "Nama gabungan dari tiga bank syariah BUMN yang resmi beroperasi pada 1 Februari 2021 adalah...",
+                options: ["Bank Mega Syariah", "Bank Muamalat Indonesia", "Bank Syariah Mandiri", "Bank Syariah Indonesia (BSI)", "Bank Bukopin Syariah"],
+                correctAnswerIndex: 3,
+                explanation: "Bank Syariah Indonesia (BSI) adalah hasil merger dari Bank Syariah Mandiri, BNI Syariah, dan BRIsyariah."
+            },
+            {
+                question: "Seseorang ingin melakukan transaksi pembayaran secara tunai, produk perbankan yang tidak sesuai untuk transaksi ini adalah...",
+                options: ["Uang tunai", "Cek", "Kartu Debit", "Kartu Kredit", "E-wallet"],
+                correctAnswerIndex: 0,
+                explanation: "Uang tunai adalah alat pembayaran tunai. Pilihan lain seperti Cek, Kartu Debit, Kartu Kredit, dan E-wallet adalah instrumen pembayaran non-tunai yang memfasilitasi transaksi tanpa menggunakan fisik uang tunai."
+            },
+            {
+                question: "Lembaga Keuangan Bukan Bank (LKBB) yang berfokus pada pembiayaan pendidikan adalah...",
+                options: ["Dana Pensiun", "Perusahaan Pembiayaan (Leasing)", "Koperasi Simpan Pinjam", "Lembaga Pendidikan Swasta", "Dana Pendidikan (misal: beasiswa yang dikelola lembaga)"],
+                correctAnswerIndex: 4,
+                explanation: "LKBB yang berfokus pada pembiayaan pendidikan seringkali berupa lembaga atau yayasan yang mengelola dana pendidikan atau beasiswa."
+            },
+            {
+                question: "Lembaga Keuangan Bukan Bank (LKBB) yang berfungsi untuk mengelola dana bagi peserta yang telah memasuki masa pensiun adalah...",
+                options: ["Asuransi", "Pegadaian", "Dana Pensiun", "Sekuritas", "Modal Ventura"],
+                correctAnswerIndex: 2,
+                explanation: "Dana Pensiun adalah lembaga yang mengelola dan membayarkan manfaat pensiun kepada pesertanya."
+            },
+            {
+                question: "Salah satu kekurangan utama dari digitalisasi perbankan adalah...",
+                options: ["Mempermudah akses bagi masyarakat", "Mengurangi biaya operasional bank", "Rentan terhadap serangan siber dan penipuan online", "Meningkatkan efisiensi transaksi", "Memperluas jangkauan layanan bank"],
+                correctAnswerIndex: 2,
+                explanation: "Meskipun memiliki banyak keuntungan, digitalisasi perbankan juga meningkatkan risiko keamanan data dan menjadi target serangan siber serta penipuan online."
+            },
+            {
+                question: "Istilah lain yang sering digunakan untuk pinjaman online adalah...",
+                options: ["Investasi", "Asuransi", "FinTech Lending (Pinjol)", "Tabungan digital", "Deposito online"],
+                correctAnswerIndex: 2,
+                explanation: "FinTech Lending atau biasa disingkat Pinjol adalah istilah umum untuk pinjaman online."
+            },
+            {
+                question: "Berikut ini yang merupakan contoh bank digital di Indonesia adalah...",
+                options: ["Bank BCA", "Bank Mandiri", "Bank Jago", "Bank BNI", "Bank BRI"],
+                correctAnswerIndex: 2,
+                explanation: "Bank Jago adalah salah satu contoh bank digital yang beroperasi penuh secara digital di Indonesia."
+            },
+            {
+                question: "Salah satu layanan utama yang ditawarkan oleh bank digital adalah...",
+                options: ["Pembukaan rekening secara fisik di kantor cabang", "Pengambilan uang tunai hanya di teller", "Transfer dan pembayaran tagihan melalui aplikasi mobile", "Pengajuan kredit harus datang ke kantor cabang", "Layanan terbatas hanya untuk nasabah korporasi"],
+                correctAnswerIndex: 2,
+                explanation: "Bank digital fokus pada layanan berbasis aplikasi mobile untuk mempermudah transaksi seperti transfer dan pembayaran tagihan."
+            },
+            {
+                question: "Tujuan utama Bank Indonesia sebagai bank sentral adalah...",
+                options: ["Mencari keuntungan sebesar-besarnya.", "Menjaga stabilitas nilai rupiah.", "Memberikan kredit kepada masyarakat.", "Mengatur harga barang di pasar.", "Mengelola kas negara."],
+                correctAnswerIndex: 1,
+                explanation: "Tujuan utama Bank Indonesia adalah mencapai dan memelihara stabilitas nilai rupiah."
+            },
+            {
+                question: "Salah satu kegiatan yang dilakukan oleh bank sentral adalah...",
+                options: ["Memberikan pinjaman langsung kepada individu.", "Mengatur dan mengawasi perbankan.", "Menerima simpanan dari masyarakat umum.", "Menjual produk asuransi.", "Mengelola investasi saham."],
+                correctAnswerIndex: 1,
+                explanation: "Bank sentral memiliki peran vital dalam mengatur dan mengawasi kebijakan moneter serta sistem perbankan."
+            },
+            {
+                question: "Berikut ini yang paling sesuai dengan fungsi Bank Sentral sebagai 'banker's bank' adalah...",
+                options: ["Menerima simpanan dari masyarakat.", "Memberikan pinjaman kepada bank-bank lain.", "Mengatur suku bunga tabungan.", "Menjual obligasi pemerintah.", "Mencetak uang tunai."],
+                correctAnswerIndex: 1,
+                explanation: "'Banker's bank' berarti bank sentral bertindak sebagai bank bagi bank-bank umum, salah satunya dengan memberikan pinjaman atau fasilitas likuiditas."
+            },
+            {
+                question: "Lembaga yang menggantikan fungsi Bank Indonesia dalam mengatur dan mengawasi bank secara mikroprudensial adalah...",
+                options: ["Kementerian Keuangan", "Otoritas Jasa Keuangan (OJK)", "Lembaga Penjamin Simpanan (LPS)", "Badan Pusat Statistik (BPS)", "Bursa Efek Indonesia (BEI)"],
+                correctAnswerIndex: 1,
+                explanation: "Otoritas Jasa Keuangan (OJK) mengambil alih tugas pengaturan dan pengawasan mikroprudensial perbankan dari Bank Indonesia sejak tahun 2013."
+            },
+            {
+                question: "Tahap pengelolaan uang yang sesuai, setelah uang dicetak, adalah...",
+                options: ["Dimusnahkan", "Ditarik dari peredaran", "Diedarkan", "Disimpan di Bank Umum", "Ditimbun di Bank Sentral"],
+                correctAnswerIndex: 2,
+                explanation: "Setelah dicetak, uang baru akan diedarkan ke masyarakat melalui bank-bank umum."
+            },
+            {
+                question: "Salah satu wewenang OJK yang sesuai adalah...",
+                options: ["Menentukan kebijakan moneter.", "Mengatur dan mengawasi lembaga jasa keuangan.", "Mencetak uang rupiah.", "Mengelola cadangan devisa negara.", "Memberikan pinjaman kepada pemerintah."],
+                correctAnswerIndex: 1,
+                explanation: "OJK memiliki wewenang luas dalam mengatur dan mengawasi seluruh kegiatan di sektor jasa keuangan."
+            },
+            {
+                question: "Istilah atau sebutan bagi anggota dewan komisioner OJK adalah...",
+                options: ["Komisaris", "Direksi", "Dewan Pengawas", "Anggota Dewan Komisioner", "Pejabat Tinggi"],
+                correctAnswerIndex: 3,
+                explanation: "Jabatan tertinggi di OJK adalah Anggota Dewan Komisioner, yang dipimpin oleh Ketua Dewan Komisioner."
+            },
+            {
+                question: "Ketua Dewan Komisioner OJK saat ini (berdasarkan informasi umum) adalah...",
+                options: ["Gubernur Bank Indonesia", "Menteri Keuangan", "Kepala Eksekutif LPS", "Mahendra Siregar (per Maret 2024)", "Perry Warjiyo"],
+                correctAnswerIndex: 3,
+                explanation: "Mahendra Siregar adalah Ketua Dewan Komisioner OJK saat ini (informasi per Maret 2024)."
+            },
+            {
+                question: "Jika terjadi permasalahan terkait investasi bodong yang merugikan masyarakat, bidang OJK yang paling relevan untuk menangani masalah tersebut adalah...",
+                options: ["Perbankan", "Pasar Modal", "Industri Keuangan Non Bank (IKNB)", "Edukasi dan Perlindungan Konsumen", "Pengawasan Bank Sentral"],
+                correctAnswerIndex: 3,
+                explanation: "Divisi Edukasi dan Perlindungan Konsumen OJK memiliki peran penting dalam menangani pengaduan dan permasalahan yang merugikan konsumen jasa keuangan, termasuk investasi bodong."
+            },
+            {
+                question: "Pernyataan yang benar mengenai tugas OJK dan BI adalah...",
+                options: ["OJK mengatur kebijakan moneter, BI mengawasi perbankan.", "OJK mengatur dan mengawasi seluruh lembaga jasa keuangan, BI menjaga stabilitas nilai rupiah.", "Keduanya memiliki tugas yang sama dalam mencetak uang.", "BI mengatur industri asuransi, OJK mengawasi bank sentral.", "OJK hanya berwenang di pasar modal, BI hanya di perbankan."],
+                correctAnswerIndex: 1,
+                explanation: "OJK mengatur dan mengawasi seluruh lembaga jasa keuangan (bank, IKNB, pasar modal), sementara BI fokus pada kebijakan moneter untuk menjaga stabilitas nilai rupiah."
+            },
+            {
+                question: "Lembaga yang menjamin simpanan nasabah bank di Indonesia adalah...",
+                options: ["Bank Indonesia (BI)", "Otoritas Jasa Keuangan (OJK)", "Lembaga Penjamin Simpanan (LPS)", "Kementerian Keuangan", "Perbankan itu sendiri"],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga Penjamin Simpanan (LPS) bertugas menjamin simpanan nasabah bank di Indonesia."
+            },
+            {
+                question: "Berikut ini yang merupakan sistem pembayaran adalah...",
+                options: ["Proses pertukaran barang secara barter.", "Mekanisme pemindahan dana antarpihak.", "Penentuan harga produk di pasar.", "Pemberian pinjaman oleh bank.", "Pengelolaan kas perusahaan."],
+                correctAnswerIndex: 1,
+                explanation: "Sistem pembayaran adalah seperangkat aturan, lembaga, dan mekanisme yang digunakan untuk memindahkan dana guna memenuhi suatu kewajiban yang timbul dari suatu kegiatan ekonomi."
+            },
+            {
+                question: "EDC adalah singkatan dari...",
+                options: ["Electronic Data Capture", "Economic Development Center", "European Digital Currency", "Enhanced Data Communication", "Electronic Device Control"],
+                correctAnswerIndex: 0,
+                explanation: "EDC singkatan dari Electronic Data Capture, yaitu alat yang digunakan untuk memproses transaksi kartu debit/kredit."
+            },
+            {
+                question: "Jika Anda ingin melakukan transaksi pembayaran di toko ritel dengan menggunakan kartu debit atau kredit, infrastruktur pembayaran yang sesuai adalah...",
+                options: ["RTGS", "Kliring", "EDC Terminal", "ATM", "Internet Banking"],
+                correctAnswerIndex: 2,
+                explanation: "EDC Terminal adalah alat yang digunakan di toko-toko untuk memproses pembayaran menggunakan kartu debit atau kredit."
+            },
+            {
+                question: "Dua lembaga yang bekerjasama dalam pengembangan dan implementasi QRIS adalah...",
+                options: ["Bank Indonesia dan Kementerian Keuangan", "Otoritas Jasa Keuangan dan Lembaga Penjamin Simpanan", "Bank Indonesia dan Asosiasi Sistem Pembayaran Indonesia (ASPI)", "Bank Umum dan Bank Perkreditan Rakyat", "Perusahaan Teknologi dan Otoritas Jasa Keuangan"],
+                correctAnswerIndex: 2,
+                explanation: "QRIS dikembangkan dan diimplementasikan oleh Bank Indonesia bekerja sama dengan Asosiasi Sistem Pembayaran Indonesia (ASPI)."
+            },
+            {
+                question: "Usaha yang *tidak bisa* menggunakan stiker QRIS adalah...",
+                options: ["Pedagang kaki lima", "Toko kelontong", "Perusahaan multinasional dengan transaksi besar", "Tukang parkir", "Warung makan sederhana"],
+                correctAnswerIndex: 2,
+                explanation: "QRIS ditujukan untuk memfasilitasi transaksi pembayaran retail skala kecil hingga menengah. Perusahaan multinasional dengan transaksi besar biasanya memiliki sistem pembayaran yang lebih kompleks."
+            },
+            {
+                question: "Tipe pembayaran QRIS yang paling umum digunakan oleh konsumen untuk melakukan pembayaran adalah...",
+                options: ["QRIS Merchant Presented Mode (MPM) Statis", "QRIS Customer Presented Mode (CPM)", "QRIS Merchant Presented Mode (MPM) Dinamis", "QRIS Transfer", "QRIS Tarik Tunai"],
+                correctAnswerIndex: 0,
+                explanation: "QRIS Merchant Presented Mode (MPM) Statis adalah yang paling umum, di mana QR code tetap ada di merchant dan discan oleh konsumen."
+            },
+            {
+                question: "Peran bank sentral dalam sistem pembayaran adalah...",
+                options: ["Hanya sebagai pengguna sistem pembayaran.", "Mengatur, mengawasi, dan mengembangkan sistem pembayaran.", "Memberikan pinjaman kepada penyedia layanan pembayaran.", "Menentukan tarif biaya transaksi pembayaran.", "Mengelola semua transaksi pembayaran secara langsung."],
+                correctAnswerIndex: 1,
+                explanation: "Bank sentral memiliki peran krusial sebagai regulator, pengawas, dan pengembang sistem pembayaran nasional."
+            },
+            {
+                question: "Salah satu unsur pengaman rupiah yang benar adalah...",
+                options: ["Adanya tulisan braille di setiap pecahan uang.", "Gambar pahlawan yang bisa berubah warna.", "Benang pengaman yang tertanam di kertas uang.", "Hologram tiga dimensi yang sangat besar.", "Nomor seri yang hanya terlihat dengan sinar UV."],
+                correctAnswerIndex: 2,
+                explanation: "Benang pengaman yang tertanam di kertas uang adalah salah satu unsur pengaman rupiah yang mudah dikenali."
+            },
+            {
+                question: "Unsur pengaman rupiah yang bertujuan untuk membantu tunanetra adalah...",
+                options: ["Gambar tersembunyi (latent image)", "Tanda air (watermark)", "Kode tunanetra (blind code)", "Desain mikroteks", "Tinta berubah warna (color shifting ink)"],
+                correctAnswerIndex: 2,
+                explanation: "Kode tunanetra (atau rabaan) berupa pasangan garis di samping kiri dan kanan uang kertas membantu tunanetra mengenali nilai nominal uang."
+            },
+            {
+                question: "Berikut ini yang merupakan contoh e-wallet (dompet digital) adalah...",
+                options: ["Kartu Debit", "Kartu Kredit", "GoPay", "Cek", "Bilyet Giro"],
+                correctAnswerIndex: 2,
+                explanation: "GoPay adalah salah satu contoh dompet digital atau e-wallet yang populer di Indonesia."
+            },
+            {
+                question: "Contoh transaksi non-tunai yang paling tepat adalah...",
+                options: ["Membayar belanjaan dengan uang kertas di pasar.", "Membayar tagihan listrik menggunakan aplikasi mobile banking.", "Menerima upah dalam bentuk uang tunai.", "Menarik uang tunai dari ATM.", "Membeli barang dengan sistem barter."],
+                correctAnswerIndex: 1,
+                explanation: "Membayar tagihan listrik melalui mobile banking adalah contoh transaksi non-tunai karena tidak melibatkan uang fisik."
+            },
+            {
+                question: "Persamaan antara kartu debit dan e-wallet sebagai instrumen non-tunai adalah...",
+                options: ["Keduanya bisa digunakan untuk tarik tunai di ATM.", "Keduanya memerlukan PIN untuk setiap transaksi.", "Keduanya merupakan media pembayaran non-tunai.", "Keduanya selalu terhubung langsung dengan rekening bank.", "Keduanya hanya bisa digunakan untuk transaksi online."],
+                correctAnswerIndex: 2,
+                explanation: "Baik kartu debit maupun e-wallet adalah media atau instrumen yang memungkinkan pembayaran tanpa menggunakan uang tunai fisik."
+            },
+            {
+                question: "Penerapan fungsi uang sebagai 'alat tukar' yang sesuai adalah...",
+                options: ["Menabung uang di bank untuk masa depan.", "Menggunakan uang untuk membeli makanan.", "Menjadikan uang sebagai standar nilai barang.", "Menyimpan uang di rumah sebagai cadangan.", "Menggunakan uang sebagai alat pembayaran utang."],
+                correctAnswerIndex: 1,
+                explanation: "Uang berfungsi sebagai alat tukar ketika digunakan untuk memperoleh barang atau jasa, seperti membeli makanan."
+            }
+        ];
+
+        // Data Soal Sosiologi
+        const sosiologiQuestions = [
+            {
+                question: "Identitas sebagai objek kajian sosiologi merujuk pada...",
+                options: ["Ciri-ciri fisik individu yang bersifat genetik.", "Kumpulan minat pribadi yang dimiliki seseorang.", "Konsep diri individu yang terbentuk melalui interaksi sosial.", "Warisan budaya yang diwariskan dari nenek moyang.", "Bakat dan potensi alami yang dimiliki sejak lahir."],
+                correctAnswerIndex: 2,
+                explanation: "Dalam sosiologi, identitas adalah konsep diri yang dibangun dan dipelihara melalui interaksi dengan orang lain dan kelompok sosial."
+            },
+            {
+                question: "Proses terbentuknya identitas personal dalam diri individu paling utama dipengaruhi oleh...",
+                options: ["Faktor genetik dan keturunan.", "Lingkungan alam tempat tinggal.", "Interaksi sosial dengan individu lain dan kelompok.", "Kekuatan spiritual dan keagamaan.", "Keberuntungan dan kesempatan yang datang."],
+                correctAnswerIndex: 2,
+                explanation: "Interaksi sosial adalah fondasi utama pembentukan identitas personal, di mana individu belajar nilai, norma, dan peran dari lingkungannya."
+            },
+            {
+                question: "Perhatikan tabel berikut:\n| No. | Contoh Identitas Sosial |\n|-----|-------------------------|\n| 1   | Anggota klub motor      |\n| 2   | Seorang dokter          |\n| 3   | Siswa SMAN 1            |\n| 4   | Penggemar musik K-Pop   |\n| 5   | Penduduk asli Jawa      |\nYang termasuk contoh identitas sosial ditunjukkan oleh nomor...",
+                options: ["1, 2, dan 3", "1, 3, dan 4", "2, 4, dan 5", "1, 2, 3, dan 4", "1, 2, 3, 4, dan 5"],
+                correctAnswerIndex: 4, // All of them are examples of social identity
+                explanation: "Semua contoh di atas (anggota klub, profesi, status pelajar, penggemar, dan asal daerah) adalah bentuk-bentuk identitas sosial karena merujuk pada keanggotaan atau peran dalam suatu kelompok atau masyarakat."
+            },
+            {
+                question: "Kedudukan manusia sebagai makhluk sosial menunjukkan bahwa manusia...",
+                options: ["Mampu hidup sendiri tanpa bantuan orang lain.", "Selalu ingin bersaing dengan sesamanya.", "Membutuhkan interaksi dan kerjasama dengan orang lain.", "Lebih mengutamakan kepentingan pribadi.", "Dapat mencapai kebahagiaan tanpa hubungan sosial."],
+                correctAnswerIndex: 2,
+                explanation: "Sebagai makhluk sosial, manusia tidak dapat hidup sendiri dan selalu membutuhkan interaksi, komunikasi, serta kerjasama dengan individu lain."
+            },
+            {
+                question: "Salah satu faktor utama pembentukan identitas adalah...",
+                options: ["Bentuk fisik dan penampilan.", "Lingkungan geografis tempat tinggal.", "Pengalaman hidup dan interaksi sosial.", "Warna kulit dan ras.", "Kekayaan materi yang dimiliki."],
+                correctAnswerIndex: 2,
+                explanation: "Identitas dibentuk melalui pengalaman hidup dan terutama melalui interaksi sosial yang terus-menerus dengan lingkungan sekitar."
+            },
+            {
+                question: "Ani selalu tampil rapi dan tertib karena terbiasa melihat orang tuanya yang disiplin. Contoh ini menunjukkan identitas individu terbentuk berdasarkan faktor...",
+                options: ["Biologis", "Psikologis", "Sosial", "Budaya", "Geografis"],
+                correctAnswerIndex: 2,
+                explanation: "Contoh ini menunjukkan pengaruh faktor sosial (keluarga/orang tua) dalam pembentukan identitas dan perilaku individu."
+            },
+            {
+                question: "Contoh kelompok sosial berdasarkan kesamaan daerah adalah...",
+                options: ["Kelompok pecinta alam", "Fans klub sepak bola", "Ikatan Mahasiswa Papua di Yogyakarta", "Komunitas gamers online", "Perkumpulan pedagang pasar"],
+                correctAnswerIndex: 2,
+                explanation: "Ikatan Mahasiswa Papua di Yogyakarta adalah kelompok sosial yang terbentuk berdasarkan kesamaan asal daerah."
+            },
+            {
+                question: "Pengaruh sosial terhadap peran individu dapat terlihat ketika...",
+                options: ["Seseorang memilih hobi berdasarkan minat pribadi.", "Individu menyesuaikan perilakunya dengan harapan kelompok.", "Seseorang mengembangkan bakat alami yang dimilikinya.", "Individu mengabaikan norma-norma yang berlaku.", "Seseorang mencapai tujuan tanpa campur tangan orang lain."],
+                correctAnswerIndex: 1,
+                explanation: "Pengaruh sosial seringkali menyebabkan individu untuk menyesuaikan perilaku, pikiran, atau perasaannya agar sesuai dengan harapan atau norma kelompok."
+            },
+            {
+                question: "Cara memperoleh status sosial individu melalui usaha dan kerja keras disebut...",
+                options: ["Ascribed status", "Achieved status", "Assigned status", "Inherited status", "Acquired status"],
+                correctAnswerIndex: 1,
+                explanation: "Achieved status adalah status yang diperoleh seseorang melalui usaha, kerja keras, dan prestasi yang dicapai."
+            },
+            {
+                question: "Seorang anak buruh pabrik berhasil menjadi seorang profesor di universitas ternama setelah menempuh pendidikan yang tinggi. Cara memperoleh status ini termasuk...",
+                options: ["Ascribed status", "Achieved status", "Assigned status", "Inherited status", "Acquired status"],
+                correctAnswerIndex: 1,
+                explanation: "Status profesor diperoleh melalui pendidikan dan usaha, sehingga termasuk achieved status."
+            },
+            {
+                question: "Faktor yang memengaruhi hancurnya gejala sosial adalah...",
+                options: ["Kurangnya interaksi sosial antarindividu.", "Ketidakmampuan masyarakat beradaptasi dengan perubahan.", "Adanya nilai dan norma yang kuat dalam masyarakat.", "Tingginya tingkat kesadaran hukum masyarakat.", "Stabilnya kondisi ekonomi masyarakat."],
+                correctAnswerIndex: 1,
+                explanation: "Ketidakmampuan masyarakat beradaptasi dengan perubahan dapat menyebabkan munculnya atau memburuknya gejala sosial negatif, seperti disorganisasi."
+            },
+            {
+                question: "Contoh gejala sosial berdasarkan pernyataan adalah...",
+                options: ["Terjadinya hujan deras yang menyebabkan banjir.", "Gempa bumi yang menghancurkan bangunan.", "Meningkatnya angka kriminalitas di perkotaan.", "Erupsi gunung berapi.", "Perubahan iklim global."],
+                correctAnswerIndex: 2,
+                explanation: "Meningkatnya angka kriminalitas adalah fenomena sosial yang disebabkan oleh interaksi dan struktur sosial, berbeda dengan fenomena alam."
+            },
+            {
+                question: "Gejala sosial yang ditandai dengan adanya kesenjangan ekonomi yang mencolok antara kelompok kaya dan miskin dalam masyarakat disebut...",
+                options: ["Modernisasi", "Globalisasi", "Ketimpangan sosial", "Urbanisasi", "Disorganisasi sosial"],
+                correctAnswerIndex: 2,
+                explanation: "Kesenjangan ekonomi yang mencolok antara kelompok kaya dan miskin adalah bentuk dari ketimpangan sosial."
+            },
+            {
+                question: "Upaya yang dapat dilakukan dalam mengatasi gejala sosial akibat perubahan adalah...",
+                options: ["Menolak semua bentuk perubahan sosial.", "Mengabaikan dampak negatif dari perubahan.", "Meningkatkan kesadaran masyarakat akan pentingnya adaptasi dan edukasi.", "Membatasi interaksi dengan budaya luar.", "Mengisolasi diri dari perkembangan teknologi."],
+                correctAnswerIndex: 2,
+                explanation: "Meningkatkan kesadaran dan edukasi adalah kunci agar masyarakat dapat beradaptasi secara positif terhadap perubahan sosial dan mengatasi gejala negatifnya."
+            },
+            {
+                question: "Identifikasi upaya dalam menjauhi pengaruh gejala sosial negatif adalah...",
+                options: ["Mengikuti semua tren yang ada di masyarakat.", "Memperkuat nilai-nilai agama dan moral pribadi.", "Lebih banyak menghabiskan waktu di media sosial.", "Menjauhkan diri dari pergaulan yang positif.", "Bersikap individualistis dan tidak peduli lingkungan."],
+                correctAnswerIndex: 1,
+                explanation: "Memperkuat nilai-nilai agama dan moral pribadi dapat menjadi benteng untuk menjauhi pengaruh gejala sosial negatif."
+            },
+            {
+                question: "Langkah preventif yang tepat dalam mengatasi gejala sosial pengangguran adalah...",
+                options: ["Meningkatkan jumlah angkatan kerja tanpa pelatihan.", "Memberikan bantuan sosial tanpa syarat.", "Mengembangkan pendidikan kejuruan dan kewirausahaan.", "Membatasi lapangan kerja bagi lulusan baru.", "Mengurangi investasi pada sektor industri."],
+                correctAnswerIndex: 2,
+                explanation: "Pendidikan kejuruan dan kewirausahaan membekali individu dengan keterampilan yang relevan dan kemampuan menciptakan lapangan kerja, sehingga mengurangi pengangguran."
+            },
+            {
+                question: "Lembaga sosial adalah...",
+                options: ["Sekelompok individu yang memiliki kesamaan hobi.", "Organisasi formal yang didirikan pemerintah.", "Suatu sistem norma dan aturan yang mengatur perilaku anggota masyarakat.", "Tempat berkumpulnya para pemimpin komunitas.", "Bangunan fisik tempat kegiatan sosial."],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga sosial adalah pola perilaku yang mapan, terorganisir, dan melibatkan norma-norma untuk memenuhi kebutuhan dasar masyarakat."
+            },
+            {
+                question: "Ciri-ciri lembaga sosial berdasarkan simbol atau ciri khasnya dapat dilihat dari...",
+                options: ["Struktur organisasi yang tidak jelas.", "Adanya lambang, bendera, atau ritual tertentu.", "Jumlah anggotanya yang sangat banyak.", "Lokasi fisiknya yang terpencil.", "Tidak adanya tujuan yang jelas."],
+                correctAnswerIndex: 1,
+                explanation: "Lembaga sosial seringkali memiliki simbol, lambang, atau ritual yang menjadi ciri khas dan membedakannya dari lembaga lain."
+            },
+            {
+                question: "'Peraturan lalu lintas yang mengatur pengendara di jalan raya' merupakan ciri lembaga sosial berdasarkan pernyataan bahwa lembaga sosial memiliki...",
+                options: ["Usia yang sangat tua.", "Alat-alat perlengkapan.", "Norma-norma yang jelas dan tertulis.", "Ideologi atau cita-cita.", "Tujuan yang tidak dapat diubah."],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga sosial dicirikan oleh adanya seperangkat norma dan aturan yang mengatur perilaku anggotanya."
+            },
+            {
+                question: "Fungsi manifest lembaga sosial adalah...",
+                options: ["Fungsi yang tidak disadari dan tidak direncanakan.", "Fungsi yang tersembunyi dan tidak tampak.", "Fungsi utama yang disadari dan dikehendaki oleh anggota masyarakat.", "Fungsi yang hanya bermanfaat bagi sebagian kecil anggota masyarakat.", "Fungsi yang muncul secara tidak sengaja."],
+                correctAnswerIndex: 2,
+                explanation: "Fungsi manifest adalah fungsi yang jelas, disadari, dan menjadi tujuan utama pembentukan lembaga sosial."
+            },
+            {
+                question: "Lembaga sosial yang berfungsi mengatur hubungan antar individu dalam memenuhi kebutuhan ekonomi adalah...",
+                options: ["Lembaga Keluarga", "Lembaga Pendidikan", "Lembaga Ekonomi", "Lembaga Agama", "Lembaga Politik"],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga ekonomi mengatur produksi, distribusi, dan konsumsi barang dan jasa dalam masyarakat."
+            },
+            {
+                question: "Lembaga sosial yang berperan dalam pewarisan nilai dan norma serta sosialisasi awal individu adalah...",
+                options: ["Lembaga Ekonomi", "Lembaga Politik", "Lembaga Agama", "Lembaga Keluarga", "Lembaga Pendidikan"],
+                correctAnswerIndex: 3,
+                explanation: "Lembaga keluarga adalah agen sosialisasi primer yang pertama kali menanamkan nilai dan norma pada individu."
+            },
+            {
+                question: "Lembaga sosial yang berfungsi untuk mengatur dan mengawasi jalannya pemerintahan serta distribusi kekuasaan adalah...",
+                options: ["Lembaga Ekonomi", "Lembaga Pendidikan", "Lembaga Keluarga", "Lembaga Politik", "Lembaga Hukum"],
+                correctAnswerIndex: 3,
+                explanation: "Lembaga politik berfokus pada pengaturan kekuasaan, pemerintahan, dan pengambilan keputusan di masyarakat."
+            },
+            {
+                question: "Stratifikasi sosial adalah...",
+                options: ["Pengelompokan individu berdasarkan hobi.", "Pembedaan posisi individu atau kelompok secara vertikal dalam masyarakat.", "Pemisahan masyarakat berdasarkan jenis kelamin.", "Pembentukan kelompok sosial berdasarkan kesamaan daerah.", "Penyatuan semua anggota masyarakat dalam satu tingkatan."],
+                correctAnswerIndex: 1,
+                explanation: "Stratifikasi sosial adalah pengelompokan anggota masyarakat berdasarkan status sosialnya secara bertingkat (hierarki)."
+            },
+            {
+                question: "Ciri utama dari stratifikasi sosial terbuka adalah...",
+                options: ["Mobilitas sosial sangat terbatas.", "Kedudukan individu ditentukan sejak lahir.", "Seseorang dapat berpindah strata sosial.", "Adanya kasta yang bersifat permanen.", "Masyarakat dibagi menjadi kelas-kelas yang kaku."],
+                correctAnswerIndex: 2,
+                explanation: "Dalam stratifikasi sosial terbuka, individu memiliki kesempatan untuk berpindah dari satu strata ke strata lain melalui usaha atau faktor lainnya."
+            },
+            {
+                question: "Dalam sistem stratifikasi sosial kasta, seseorang yang lahir sebagai Brahmana akan selalu menjadi Brahmana. Ini menunjukkan sifat stratifikasi sosial yang...",
+                options: ["Terbuka", "Tertutup", "Campuran", "Fleksibel", "Dinamis"],
+                correctAnswerIndex: 1,
+                explanation: "Stratifikasi tertutup adalah sistem di mana mobilitas sosial sangat sulit atau tidak mungkin terjadi, seperti dalam sistem kasta."
+            },
+            {
+                question: "Contoh stratifikasi sosial adalah...",
+                options: ["Perbedaan jenis pekerjaan antara petani dan nelayan.", "Pengelompokan siswa berdasarkan minat belajar.", "Pembagian masyarakat menjadi kelas atas, menengah, dan bawah.", "Pembentukan klub motor di suatu kota.", "Perbedaan hobi antara bermain musik dan membaca buku."],
+                correctAnswerIndex: 2,
+                explanation: "Pembagian masyarakat menjadi kelas atas, menengah, dan bawah adalah contoh paling jelas dari stratifikasi sosial berdasarkan ekonomi atau kekayaan."
+            },
+            {
+                question: "Dasar stratifikasi sosial yang paling umum di masyarakat modern adalah...",
+                options: ["Keturunan", "Kekuasaan", "Pendidikan", "Harta/kekayaan", "Jenis kelamin"],
+                correctAnswerIndex: 3,
+                explanation: "Di masyarakat modern, harta/kekayaan sering menjadi dasar utama dalam menentukan posisi seseorang dalam stratifikasi sosial."
+            },
+            {
+                question: "Sifat stratifikasi sosial yang menggambarkan masyarakat yang masih sangat terikat pada sistem feodal atau kasta adalah...",
+                options: ["Terbuka", "Tertutup", "Dinamis", "Fleksibel", "Campuran"],
+                correctAnswerIndex: 1,
+                explanation: "Sistem feodal atau kasta adalah contoh stratifikasi sosial tertutup, di mana posisi sosial ditentukan oleh kelahiran dan sulit diubah."
+            },
+            {
+                question: "Dampak negatif dari stratifikasi sosial yang ekstrem adalah...",
+                options: ["Mendorong persaingan yang sehat.", "Menciptakan kesenjangan sosial dan konflik.", "Meningkatkan solidaritas antar kelompok.", "Mempercepat mobilitas sosial.", "Mengurangi tingkat kemiskinan."],
+                correctAnswerIndex: 1,
+                explanation: "Stratifikasi sosial yang ekstrem dapat memicu kesenjangan yang lebar dan berpotensi menimbulkan konflik antar kelas sosial."
+            },
+            {
+                question: "Konsep mobilitas sosial adalah...",
+                options: ["Perubahan posisi individu atau kelompok dalam struktur sosial.", "Perpindahan geografis individu dari satu tempat ke tempat lain.", "Perubahan selera dan gaya hidup individu.", "Perkembangan teknologi dalam masyarakat.", "Pembentukan kelompok sosial baru."],
+                correctAnswerIndex: 0,
+                explanation: "Mobilitas sosial adalah perpindahan individu atau kelompok dari satu lapisan sosial ke lapisan sosial lainnya."
+            },
+            {
+                question: "Contoh mobilitas sosial vertikal naik adalah...",
+                options: ["Seorang karyawan dipindahkan ke divisi lain dengan jabatan yang sama.", "Anak seorang petani berhasil menjadi seorang direktur perusahaan.", "Seseorang beralih pekerjaan dari guru menjadi dosen.", "Sebuah keluarga pindah rumah dari desa ke kota.", "Seorang mahasiswa lulus kuliah dan bekerja di bidang yang sama dengan orang tuanya."],
+                correctAnswerIndex: 1,
+                explanation: "Perpindahan dari status sosial rendah (anak petani) ke status sosial tinggi (direktur perusahaan) adalah contoh mobilitas vertikal naik."
+            },
+            {
+                question: "Seorang anak dari keluarga kurang mampu berhasil masuk perguruan tinggi negeri favorit melalui jalur beasiswa. Saluran mobilitas sosial yang paling menonjol dalam ilustrasi ini adalah...",
+                options: ["Organisasi politik", "Organisasi ekonomi", "Lembaga pendidikan", "Organisasi profesi", "Lembaga keagamaan"],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga pendidikan seringkali menjadi saluran utama mobilitas sosial karena memberikan kesempatan untuk meningkatkan pengetahuan dan keterampilan."
+            },
+            {
+                question: "Salah satu dampak negatif mobilitas sosial adalah...",
+                options: ["Meningkatnya integrasi sosial.", "Terjadinya disorganisasi sosial dan konflik antarkelas.", "Mendorong peningkatan kualitas hidup.", "Memperkuat solidaritas kelompok.", "Memperluas jaringan sosial individu."],
+                correctAnswerIndex: 1,
+                explanation: "Meskipun mobilitas sosial memiliki dampak positif, terkadang juga dapat menyebabkan disorganisasi dan konflik jika perubahan status menimbulkan ketegangan antarindividu atau kelompok."
+            },
+            {
+                question: "Permasalahan sosial adalah...",
+                options: ["Segala sesuatu yang menjadi masalah pribadi individu.", "Kondisi yang tidak diinginkan dan dianggap membahayakan masyarakat.", "Peristiwa alam yang tidak dapat dihindari.", "Konflik antarnegara.", "Perubahan budaya yang terjadi secara perlahan."],
+                correctAnswerIndex: 1,
+                explanation: "Permasalahan sosial adalah kondisi yang memengaruhi sejumlah besar individu dalam masyarakat dan dianggap sebagai ancaman terhadap nilai-nilai sosial."
+            },
+            {
+                question: "Memahami konsep etnosentrisme sebagai permasalahan sosial berarti menyadari bahwa etnosentrisme dapat...",
+                options: ["Memperkuat rasa kebangsaan.", "Memicu konflik dan diskriminasi antarkelompok.", "Meningkatkan toleransi antarbudaya.", "Memperkaya khazanah budaya.", "Mengurangi kesenjangan sosial."],
+                correctAnswerIndex: 1,
+                explanation: "Etnosentrisme, yaitu kecenderungan menganggap budaya sendiri paling benar dan merendahkan budaya lain, dapat memicu konflik dan diskriminasi."
+            },
+            {
+                question: "Contoh etnosentrisme sebagai permasalahan sosial adalah...",
+                options: ["Seseorang bangga akan kebudayaan daerahnya sendiri.", "Kelompok A menganggap budayanya paling unggul dan merendahkan budaya kelompok B.", "Terjadinya pertukaran budaya antarnegara.", "Perayaan hari raya keagamaan bersama.", "Kolaborasi seni dari berbagai daerah."],
+                correctAnswerIndex: 1,
+                explanation: "Contoh ini jelas menunjukkan sikap menganggap budaya sendiri superior dan merendahkan budaya lain, yang merupakan inti dari etnosentrisme negatif."
+            },
+            {
+                question: "Upaya yang dapat dilakukan untuk mencegah permasalahan sosial adalah...",
+                options: ["Meningkatkan individualisme di masyarakat.", "Mengabaikan keberagaman budaya.", "Memperkuat nilai-nilai toleransi dan pluralisme.", "Membatasi interaksi antar kelompok yang berbeda.", "Menghilangkan perbedaan sosial."],
+                correctAnswerIndex: 2,
+                explanation: "Memperkuat nilai-nilai toleransi dan pluralisme membantu masyarakat menerima perbedaan dan mengurangi potensi konflik sosial."
+            },
+            {
+                question: "Upaya yang tepat untuk meningkatkan kerukunan masyarakat adalah...",
+                options: ["Menciptakan persaingan antarkelompok.", "Mengadakan dialog antarumat beragama dan antarkelompok.", "Menekankan perbedaan suku dan agama.", "Mengisolasi kelompok minoritas.", "Menutup diri dari pengaruh luar."],
+                correctAnswerIndex: 1,
+                explanation: "Dialog dan komunikasi terbuka antarumat beragama dan antarkelompok adalah cara efektif untuk membangun pemahaman dan kerukunan."
+            },
+            {
+                question: "Sikap yang tepat dalam menyikapi keragaman dalam masyarakat adalah...",
+                options: ["Bersikap fanatik terhadap kelompok sendiri.", "Menganggap kelompok lain lebih rendah.", "Mengembangkan sikap toleransi dan saling menghormati.", "Menghindari interaksi dengan kelompok yang berbeda.", "Memaksakan pandangan sendiri kepada orang lain."],
+                correctAnswerIndex: 2,
+                explanation: "Toleransi dan saling menghormati adalah kunci untuk menjaga keharmonisan di tengah keragaman masyarakat."
+            }
+        ];
+
+        // Global variables for quiz state
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Stores { questionIndex: index, selectedOption: optionIndex, isCorrect: boolean }
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let skippedCount = 0;
+        let isAnswerSelected = false; // To prevent multiple selections for a single question
+
+        // Get DOM elements
+        const homeScreen = document.getElementById('home-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const reviewScreen = document.getElementById('review-screen');
+
+        const startEkonomiButton = document.getElementById('start-ekonomi');
+        const startSosiologiButton = document.getElementById('start-sosiologi');
+        const questionCounter = document.getElementById('question-counter');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const nextButton = document.getElementById('next-button');
+
+        const correctScoreSpan = document.getElementById('correct-score');
+        const incorrectScoreSpan = document.getElementById('incorrect-score');
+        const skippedScoreSpan = document.getElementById('skipped-score');
+        const reviewButton = document.getElementById('review-button');
+        const restartButton = document.getElementById('restart-button');
+        const reviewContainer = document.getElementById('review-container');
+        const backToHomeFromReviewButton = document.getElementById('back-to-home-from-review');
+
+        // --- Functions ---
+
+        /**
+         * Hides all main screens and displays the specified one.
+         * @param {string} screenId - The ID of the screen to show.
+         */
+        function showScreen(screenId) {
+            homeScreen.classList.add('hidden');
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            reviewScreen.classList.add('hidden');
+
+            document.getElementById(screenId).classList.remove('hidden');
+            document.getElementById(screenId).classList.add('flex'); // Ensure flex display for centering
+        }
+
+        /**
+         * Initializes the quiz for a selected subject.
+         * @param {Array<Object>} subjectQuestions - Array of questions for the chosen subject.
+         */
+        function startQuiz(subjectQuestions) {
+            questions = subjectQuestions;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            correctCount = 0;
+            incorrectCount = 0;
+            skippedCount = 0;
+            isAnswerSelected = false; // Reset for first question
+
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        /**
+         * Loads and displays the current question.
+         */
+        function loadQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const question = questions[currentQuestionIndex];
+
+                questionCounter.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+                questionText.innerHTML = question.question.replace(/\n/g, '<br>'); // Handle markdown newlines
+                optionsContainer.innerHTML = ''; // Clear previous options
+
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = `option-button bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg shadow-sm transition duration-200 w-full text-left ring-1 ring-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400`;
+                    button.onclick = () => handleAnswer(index);
+                    optionsContainer.appendChild(button);
+                });
+
+                feedbackArea.innerHTML = ''; // Clear feedback area
+                nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+                nextButton.disabled = true;
+                isAnswerSelected = false; // Allow new selection for this question
+
+            } else {
+                showResultScreen();
+            }
+        }
+
+        /**
+         * Handles the user's answer selection.
+         * @param {number} selectedIndex - The index of the option chosen by the user.
+         */
+        function handleAnswer(selectedIndex) {
+            if (isAnswerSelected) return; // Prevent multiple clicks on options
+
+            isAnswerSelected = true;
+            const currentQuestion = questions[currentQuestionIndex];
+            const isCorrect = (selectedIndex === currentQuestion.correctAnswerIndex);
+
+            // Store the answer
+            userAnswers[currentQuestionIndex] = {
+                questionIndex: currentQuestionIndex,
+                selectedOption: selectedIndex,
+                isCorrect: isCorrect
+            };
+
+            // Update scores
+            if (isCorrect) {
+                correctCount++;
+            } else {
+                incorrectCount++;
+            }
+
+            // Provide visual feedback
+            const optionButtons = optionsContainer.children;
+            Array.from(optionButtons).forEach((button, index) => {
+                button.disabled = true; // Disable all options after selection
+                button.classList.remove('hover:bg-gray-200'); // Remove hover effect
+
+                if (index === selectedIndex) {
+                    // This is the selected option
+                    button.classList.add('selected');
+                    if (isCorrect) {
+                        button.classList.add('correct');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                    } else {
+                        button.classList.add('incorrect');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-red-600">✖</span>`;
+                    }
+                }
+
+                // Always show the correct answer with a green highlight if it's different from selected
+                if (!isCorrect && index === currentQuestion.correctAnswerIndex) {
+                    button.classList.add('correct');
+                    button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                }
+            });
+
+            // Show explanation
+            feedbackArea.innerHTML = `
+                <p class="font-semibold mb-2 ${isCorrect ? 'correct-text' : 'incorrect-text'}">
+                    ${isCorrect ? 'Jawaban Anda Benar!' : 'Jawaban Anda Salah.'}
+                </p>
+                <p class="feedback-text">
+                    <strong>Pembahasan:</strong> ${currentQuestion.explanation}
+                </p>
+            `;
+
+            nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            nextButton.disabled = false;
+        }
+
+        /**
+         * Moves to the next question or finishes the quiz.
+         */
+        function nextQuestion() {
+            // If user did not select an answer before clicking next, it's skipped
+            if (!isAnswerSelected && currentQuestionIndex < questions.length) {
+                userAnswers[currentQuestionIndex] = {
+                    questionIndex: currentQuestionIndex,
+                    selectedOption: null, // Indicates skipped
+                    isCorrect: false // Skipped is counted as incorrect for scoring purposes, but explicitly marked as skipped
+                };
+                skippedCount++;
+            }
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        /**
+         * Displays the final result screen.
+         */
+        function showResultScreen() {
+            // Recalculate skipped just in case
+            let calculatedSkipped = 0;
+            userAnswers.forEach(answer => {
+                if (answer.selectedOption === null) {
+                    calculatedSkipped++;
+                }
+            });
+            skippedCount = calculatedSkipped; // Ensure skippedCount is accurate based on userAnswers history
+
+            correctScoreSpan.textContent = correctCount;
+            incorrectScoreSpan.textContent = incorrectCount;
+            skippedScoreSpan.textContent = skippedCount;
+            showScreen('result-screen');
+        }
+
+        /**
+         * Displays all questions with user's answers, correct answers, and explanations.
+         */
+        function reviewQuiz() {
+            showScreen('review-screen');
+            reviewContainer.innerHTML = ''; // Clear previous review content
+
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = (userAnswer && userAnswer.isCorrect);
+                const selectedOptionText = userAnswer && userAnswer.selectedOption !== null ? question.options[userAnswer.selectedOption] : 'Tidak dijawab';
+                const correctAnswerText = question.options[question.correctAnswerIndex];
+
+                const questionReviewDiv = document.createElement('div');
+                questionReviewDiv.className = `p-5 rounded-lg shadow-md ${isCorrect ? 'bg-green-50' : 'bg-red-50'} border ${isCorrect ? 'border-green-200' : 'border-red-200'}`;
+                questionReviewDiv.innerHTML = `
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Soal ${index + 1}:</h3>
+                    <div class="text-md text-gray-800 mb-3 leading-relaxed">${question.question.replace(/\n/g, '<br>')}</div>
+                    <ul class="list-disc ml-5 mb-3 text-gray-700">
+                        ${question.options.map((option, optIndex) => `
+                            <li class="${optIndex === question.correctAnswerIndex ? 'font-bold text-green-700' : ''} ${userAnswer && optIndex === userAnswer.selectedOption && !isCorrect ? 'line-through text-red-600' : ''}">
+                                ${option}
+                                ${optIndex === question.correctAnswerIndex ? '<span class="text-green-600 font-semibold"> (Jawaban Benar)</span>' : ''}
+                                ${userAnswer && optIndex === userAnswer.selectedOption && optIndex !== question.correctAnswerIndex ? '<span class="text-red-600 font-semibold"> (Jawaban Anda)</span>' : ''}
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <p class="mb-2"><strong>Jawaban Anda:</strong> <span class="${userAnswer && userAnswer.selectedOption !== null && userAnswer.isCorrect ? 'text-green-600' : (userAnswer && userAnswer.selectedOption !== null ? 'text-red-600' : 'text-gray-500')}">${selectedOptionText}</span></p>
+                    <p class="mb-2"><strong>Jawaban Benar:</strong> <span class="text-green-600">${correctAnswerText}</span></p>
+                    <p class="text-sm text-gray-700"><strong>Pembahasan:</strong> ${question.explanation}</p>
+                `;
+                reviewContainer.appendChild(questionReviewDiv);
+            });
+        }
+
+        /**
+         * Resets the quiz and goes back to the home screen.
+         */
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            correctCount = 0;
+            incorrectCount = 0;
+            skippedCount = 0;
+            isAnswerSelected = false;
+            questions = []; // Clear current questions
+            showScreen('home-screen');
+        }
+
+        // --- Event Listeners ---
+        window.onload = () => {
+            showScreen('home-screen');
+
+            startEkonomiButton.addEventListener('click', () => startQuiz(ekonomiQuestions));
+            startSosiologiButton.addEventListener('click', () => startQuiz(sosiologiQuestions));
+            nextButton.addEventListener('click', nextQuestion);
+            reviewButton.addEventListener('click', reviewQuiz);
+            restartButton.addEventListener('click', resetQuiz);
+            backToHomeFromReviewButton.addEventListener('click', resetQuiz);
+        };
+
+        // Helper to handle markdown in question text and explanations
+        // This is a simplified markdown parser for basic bold/italic/newline
+        function parseMarkdown(text) {
+            let html = text.replace(/\n/g, '<br>'); // Newlines
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italic
+            return html;
+        }
+
+    </script>
+</body>
+</html>
