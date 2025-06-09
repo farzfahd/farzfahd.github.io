@@ -33,6 +33,7 @@
             align-items: center;
             justify-content: space-between;
             text-align: left; /* Ensure text aligns left */
+            min-height: 48px; /* Ensure sufficient tap target size for mobile */
         }
         .option-button:hover:not(.selected):not(.correct):not(.incorrect) {
             background-color: #e2e8f0; /* bg-blue-100 equivalent */
@@ -155,6 +156,9 @@
         }
         /* Mobile adjustments for material screen */
         @media (max-width: 768px) {
+            #app-container {
+                padding: 1.5rem;
+            }
             .material-flex-container {
                 flex-direction: column;
             }
@@ -163,11 +167,29 @@
                 border-right: none;
                 border-bottom: 1px solid #e2e8f0;
                 padding-right: 0;
-                max-height: 200px; /* Limit sidebar height on mobile */
+                max-height: 250px; /* Limit sidebar height on mobile */
+                margin-bottom: 1rem;
             }
             .material-main-content {
                 padding-left: 0;
                 padding-top: 1.5rem;
+            }
+            .main-button {
+                padding: 1rem 1.5rem;
+                font-size: 1.1rem;
+            }
+            .option-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+            .feedback-icon {
+                font-size: 1.25rem;
+            }
+            .feedback-text {
+                font-size: 0.85rem;
+            }
+            #result-screen .grid {
+                grid-template-columns: 1fr; /* Stack scores vertically on small screens */
             }
         }
     </style>
@@ -237,7 +259,7 @@
                 <button id="review-button" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto">
                     Tinjau Jawaban
                 </button>
-                <button id="go-to-material-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto">
+                <button id="go-to-material-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out w-full md:w-auto">
                     Menuju Materi
                 </button>
                 <button id="restart-button" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto">
@@ -268,7 +290,11 @@
                     <!-- Material content will be loaded here -->
                 </div>
             </div>
-            <button id="back-to-home-from-material" class="mt-8 bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-center w-full md:w-auto">
+            <!-- Dynamic button for back to quiz or back to home -->
+            <button id="back-to-quiz-from-material" class="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-center w-full md:w-auto hidden">
+                Kembali ke Kuis
+            </button>
+            <button id="back-to-home-from-material" class="mt-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-center w-full md:w-auto">
                 Kembali ke Beranda
             </button>
         </div>
@@ -465,7 +491,7 @@
                 explanation: "QRIS dikembangkan dan diimplementasikan oleh Bank Indonesia bekerja sama dengan Asosiasi Sistem Pembayaran Indonesia (ASPI)."
             },
             {
-                question: "Usaha yang *tidak bisa* menggunakan stiker QRIS adalah...",
+                question: "Usaha yang tidak bisa menggunakan stiker QRIS adalah...",
                 options: ["Pedagang kaki lima", "Toko kelontong", "Perusahaan multinasional dengan transaksi besar", "Tukang parkir", "Warung makan sederhana"],
                 correctAnswerIndex: 2,
                 explanation: "QRIS ditujukan untuk memfasilitasi transaksi pembayaran retail skala kecil hingga menengah. Perusahaan multinasional dengan transaksi besar biasanya memiliki sistem pembayaran yang lebih kompleks."
@@ -1032,7 +1058,7 @@ Meskipun beragam, instrumen pembayaran non-tunai memiliki beberapa persamaan fun
     * **QRIS Merchant Presented Mode (MPM) Statis:** Ini adalah tipe yang paling umum. Merchant menampilkan satu QR Code tetap (stiker) yang kemudian discan oleh konsumen. Konsumen memasukkan nominal pembayaran secara manual di aplikasi mereka.
     * **QRIS Merchant Presented Mode (MPM) Dinamis:** Merchant menampilkan QR Code yang dibuat per transaksi (misalnya di layar EDC atau struk), di mana nominal pembayaran sudah tertera di QR Code tersebut.
     * **QRIS Customer Presented Mode (CPM):** Konsumen menampilkan QR Code mereka di aplikasi pembayaran mereka, lalu discan oleh perangkat di merchant.
-* **Usaha yang *Tidak Bisa* Menggunakan Stiker QRIS:** Pada dasarnya, QRIS dirancang untuk memfasilitasi pembayaran retail skala kecil hingga menengah. Usaha atau transaksi yang **tidak bisa** menggunakan stiker QRIS biasanya adalah transaksi dengan volume sangat besar dan kompleks yang memerlukan sistem pembayaran yang lebih canggih (misalnya, transaksi antarbank korporat, transaksi di pasar modal, atau pembayaran pajak dan retribusi tertentu yang sudah memiliki sistem tersendiri). Untuk usaha mikro, kecil, dan menengah (UMKM), stiker QRIS sangat efektif.`
+* **Usaha yang Tidak Bisa Menggunakan Stiker QRIS:** Pada dasarnya, QRIS dirancang untuk memfasilitasi pembayaran retail skala kecil hingga menengah. Usaha atau transaksi yang **tidak bisa** menggunakan stiker QRIS biasanya adalah transaksi dengan volume sangat besar dan kompleks yang memerlukan sistem pembayaran yang lebih canggih (misalnya, transaksi antarbank korporat, transaksi di pasar modal, atau pembayaran pajak dan retribusi tertentu yang sudah memiliki sistem tersendiri). Untuk usaha mikro, kecil, dan menengah (UMKM), stiker QRIS sangat efektif.`
                     }
                 ]
             }
@@ -1500,7 +1526,9 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
         const materialSubjectTitle = document.getElementById('material-subject-title'); // New
         const sidebar = document.getElementById('sidebar'); // New
         const materialContentArea = document.getElementById('material-content-area'); // New
-        const backToHomeFromMaterialButton = document.getElementById('back-to-home-from-material'); // New
+        const backToQuizFromMaterialButton = document.getElementById('back-to-quiz-from-material'); // New
+        const backToHomeFromMaterialButton = document.getElementById('back-to-home-from-material'); // Existing
+
 
         // --- Functions ---
 
@@ -1522,7 +1550,7 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
             }
         }
 
-        // --- Quiz Functions (Unchanged from previous version) ---
+        // --- Quiz Functions ---
 
         /**
          * Initializes the quiz for a selected subject.
@@ -1531,14 +1559,15 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
          */
         function startQuiz(subjectQuestions, subjectName) {
             questions = subjectQuestions;
-            currentQuizSubject = subjectName; // Store subject for later material link
-            currentQuestionIndex = 0;
+            currentQuizSubject = subjectName;
+            currentQuestionIndex = 0; // Always start new quiz from 0
             userAnswers = [];
             correctCount = 0;
             incorrectCount = 0;
             skippedCount = 0;
-            isAnswerSelected = false; // Reset for first question
+            isAnswerSelected = false;
 
+            clearQuizState(); // Clear any old state when starting a fresh quiz
             showScreen('quiz-screen');
             loadQuestion();
         }
@@ -1567,10 +1596,59 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
                 nextButton.disabled = true;
                 isAnswerSelected = false; // Allow new selection for this question
 
+                // If loading from saved state, re-apply visual feedback for the current question if already answered
+                const savedAnswer = userAnswers[currentQuestionIndex];
+                if (savedAnswer && savedAnswer.selectedOption !== null) {
+                    isAnswerSelected = true; // Mark as answered
+                    nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    nextButton.disabled = false;
+                    applyFeedbackToOptions(savedAnswer.selectedOption, savedAnswer.isCorrect, question);
+                    feedbackArea.innerHTML = `
+                        <p class="font-semibold mb-2 ${savedAnswer.isCorrect ? 'correct-text' : 'incorrect-text'}">
+                            ${savedAnswer.isCorrect ? 'Jawaban Anda Benar!' : 'Jawaban Anda Salah.'}
+                        </p>
+                        <p class="feedback-text">
+                            <strong>Pembahasan:</strong> ${question.explanation}
+                        </p>
+                    `;
+                }
+
             } else {
                 showResultScreen();
             }
         }
+
+        /**
+         * Applies visual feedback to option buttons.
+         * @param {number} selectedIndex - The index of the option chosen by the user.
+         * @param {boolean} isCorrect - Whether the selected answer was correct.
+         * @param {object} question - The current question object.
+         */
+        function applyFeedbackToOptions(selectedIndex, isCorrect, question) {
+            const optionButtons = optionsContainer.children;
+            Array.from(optionButtons).forEach((button, index) => {
+                button.disabled = true; // Disable all options
+                button.classList.remove('hover:bg-gray-200'); // Remove hover effect
+
+                if (index === selectedIndex) {
+                    button.classList.add('selected');
+                    if (isCorrect) {
+                        button.classList.add('correct');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                    } else {
+                        button.classList.add('incorrect');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-red-600">✖</span>`;
+                    }
+                }
+
+                // Always show the correct answer with a green highlight if it's different from selected
+                if (index === question.correctAnswerIndex && (index !== selectedIndex || isCorrect)) {
+                    button.classList.add('correct');
+                    button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                }
+            });
+        }
+
 
         /**
          * Handles the user's answer selection.
@@ -1587,40 +1665,30 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
             userAnswers[currentQuestionIndex] = {
                 questionIndex: currentQuestionIndex,
                 selectedOption: selectedIndex,
-                isCorrect: isCorrect
+                isCorrect: isCorrect,
+                subject: currentQuizSubject // Store subject with answer for review
             };
 
-            // Update scores
-            if (isCorrect) {
-                correctCount++;
+            // Update scores (only increment if this is the first time answering this question)
+            // This is important for resuming from localStorage. If a question was already answered,
+            // its score was already counted.
+            if (userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex].selectedOption !== null && userAnswers[currentQuestionIndex].isCorrect === isCorrect) {
+                // If already answered correctly/incorrectly and no change, don't re-increment.
+                // This logic implies that once answered, it's final for scoring.
             } else {
-                incorrectCount++;
+                if (isCorrect) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+                // If it was skipped, but now answered, reduce skipped count
+                if (userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex].selectedOption === null) {
+                    skippedCount--;
+                }
             }
 
-            // Provide visual feedback
-            const optionButtons = optionsContainer.children;
-            Array.from(optionButtons).forEach((button, index) => {
-                button.disabled = true; // Disable all options after selection
-                button.classList.remove('hover:bg-gray-200'); // Remove hover effect
 
-                if (index === selectedIndex) {
-                    // This is the selected option
-                    button.classList.add('selected');
-                    if (isCorrect) {
-                        button.classList.add('correct');
-                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
-                    } else {
-                        button.classList.add('incorrect');
-                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-red-600">✖</span>`;
-                    }
-                }
-
-                // Always show the correct answer with a green highlight if it's different from selected
-                if (!isCorrect && index === currentQuestion.correctAnswerIndex) {
-                    button.classList.add('correct');
-                    button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
-                }
-            });
+            applyFeedbackToOptions(selectedIndex, isCorrect, currentQuestion);
 
             // Show explanation
             feedbackArea.innerHTML = `
@@ -1628,12 +1696,13 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
                     ${isCorrect ? 'Jawaban Anda Benar!' : 'Jawaban Anda Salah.'}
                 </p>
                 <p class="feedback-text">
-                    <strong>Pembahasan:</strong> ${question.explanation}
+                    <strong>Pembahasan:</strong> ${currentQuestion.explanation}
                 </p>
             `;
 
             nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
             nextButton.disabled = false;
+            saveQuizState(); // Save state after each answer
         }
 
         /**
@@ -1641,14 +1710,19 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
          */
         function nextQuestion() {
             // If user did not select an answer before clicking next, it's skipped
-            if (!isAnswerSelected && currentQuestionIndex < questions.length) {
-                userAnswers[currentQuestionIndex] = {
-                    questionIndex: currentQuestionIndex,
-                    selectedOption: null, // Indicates skipped
-                    isCorrect: false // Skipped is counted as incorrect for scoring purposes, but explicitly marked as skipped
-                };
-                skippedCount++;
+            if (!isAnswerSelected) { // Check if an answer was NOT selected for the current question
+                // Only mark as skipped if it hasn't been answered before in this session
+                if (!userAnswers[currentQuestionIndex] || userAnswers[currentQuestionIndex].selectedOption === null) {
+                    userAnswers[currentQuestionIndex] = {
+                        questionIndex: currentQuestionIndex,
+                        selectedOption: null, // Indicates skipped
+                        isCorrect: false, // Skipped is counted as incorrect for scoring purposes
+                        subject: currentQuizSubject
+                    };
+                    skippedCount++;
+                }
             }
+            saveQuizState(); // Save state before moving to the next question
             currentQuestionIndex++;
             loadQuestion();
         }
@@ -1657,23 +1731,20 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
          * Displays the final result screen.
          */
         function showResultScreen() {
-            // Recalculate skipped just in case
-            let calculatedSkipped = 0;
-            userAnswers.forEach(answer => {
-                if (answer.selectedOption === null) {
-                    calculatedSkipped++;
-                }
-            });
-            skippedCount = calculatedSkipped; // Ensure skippedCount is accurate based on userAnswers history
+            // Recalculate scores based on userAnswers to ensure accuracy after resuming from local storage
+            correctCount = userAnswers.filter(a => a.isCorrect).length;
+            incorrectCount = userAnswers.filter(a => a.selectedOption !== null && !a.isCorrect).length;
+            skippedCount = userAnswers.filter(a => a.selectedOption === null).length;
 
             correctScoreSpan.textContent = correctCount;
             incorrectScoreSpan.textContent = incorrectCount;
             skippedScoreSpan.textContent = skippedCount;
 
             // Set up the "Go to Material" button
-            goToMaterialButton.onclick = () => startMaterial(currentQuizSubject);
+            goToMaterialButton.onclick = () => startMaterial(currentQuizSubject, true); // Pass true for fromQuiz
 
             showScreen('result-screen');
+            clearQuizState(); // Clear state after quiz is finished and results are shown
         }
 
         /**
@@ -1685,18 +1756,18 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
 
             questions.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
-                const isCorrect = (userAnswer && userAnswer.isCorrect);
                 const selectedOptionText = userAnswer && userAnswer.selectedOption !== null ? question.options[userAnswer.selectedOption] : 'Tidak dijawab';
                 const correctAnswerText = question.options[question.correctAnswerIndex];
+                const isCorrect = (userAnswer && userAnswer.isCorrect);
 
                 const questionReviewDiv = document.createElement('div');
-                questionReviewDiv.className = `p-5 rounded-lg shadow-md ${isCorrect ? 'bg-green-50' : 'bg-red-50'} border ${isCorrect ? 'border-green-200' : 'border-red-200'}`;
+                questionReviewDiv.className = `p-5 rounded-lg shadow-md ${isCorrect ? 'bg-green-50' : (userAnswer && userAnswer.selectedOption !== null ? 'bg-red-50' : 'bg-yellow-50')} border ${isCorrect ? 'border-green-200' : (userAnswer && userAnswer.selectedOption !== null ? 'border-red-200' : 'border-yellow-200')}`;
                 questionReviewDiv.innerHTML = `
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Soal ${index + 1}:</h3>
                     <div class="text-md text-gray-800 mb-3 leading-relaxed">${parseMarkdown(question.question)}</div>
                     <ul class="list-disc ml-5 mb-3 text-gray-700">
                         ${question.options.map((option, optIndex) => `
-                            <li class="${optIndex === question.correctAnswerIndex ? 'font-bold text-green-700' : ''} ${userAnswer && optIndex === userAnswer.selectedOption && !isCorrect ? 'line-through text-red-600' : ''}">
+                            <li class="${optIndex === question.correctAnswerIndex ? 'font-bold text-green-700' : ''} ${userAnswer && optIndex === userAnswer.selectedOption && optIndex !== question.correctAnswerIndex ? 'line-through text-red-600' : ''}">
                                 ${option}
                                 ${optIndex === question.correctAnswerIndex ? '<span class="text-green-600 font-semibold"> (Jawaban Benar)</span>' : ''}
                                 ${userAnswer && optIndex === userAnswer.selectedOption && optIndex !== question.correctAnswerIndex ? '<span class="text-red-600 font-semibold"> (Jawaban Anda)</span>' : ''}
@@ -1715,6 +1786,7 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
          * Resets the quiz and goes back to the home screen.
          */
         function resetQuiz() {
+            clearQuizState(); // Clear state when restarting from home or explicitly
             currentQuestionIndex = 0;
             userAnswers = [];
             correctCount = 0;
@@ -1726,13 +1798,14 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
             showScreen('home-screen');
         }
 
-        // --- Material Functions (NEW) ---
+        // --- Material Functions ---
 
         /**
          * Initializes the material view for a selected subject.
          * @param {string} subjectName - 'ekonomi' or 'sosiologi'
+         * @param {boolean} fromQuiz - True if navigated from quiz result.
          */
-        function startMaterial(subjectName) {
+        function startMaterial(subjectName, fromQuiz = false) {
             currentMaterialSubject = subjectName;
             currentChapterIndex = 0;
             currentSubChapterIndex = 0; // Default to first sub-chapter of first chapter
@@ -1741,6 +1814,19 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
             renderMaterialSidebar();
             loadMaterialContent(currentChapterIndex, currentSubChapterIndex);
             materialSubjectTitle.textContent = `Materi ${subjectName.charAt(0).toUpperCase() + subjectName.slice(1)}`; // Capitalize subject name
+
+            // Conditional display of "Kembali ke Kuis" button
+            // It should only appear if there's an active quiz session in localStorage
+            // or if the user explicitly clicked "Menuju Materi" from quiz results.
+            if (fromQuiz || localStorage.getItem('quizAppState')) {
+                backToQuizFromMaterialButton.classList.remove('hidden');
+                backToQuizFromMaterialButton.disabled = false;
+                backToHomeFromMaterialButton.classList.add('hidden'); // Hide "Back to Home" if "Back to Quiz" is shown
+            } else {
+                backToQuizFromMaterialButton.classList.add('hidden');
+                backToQuizFromMaterialButton.disabled = true;
+                backToHomeFromMaterialButton.classList.remove('hidden'); // Show "Back to Home"
+            }
         }
 
         /**
@@ -1780,16 +1866,15 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
 
             // Highlight active sub-chapter in sidebar
             const allSubChapterButtons = sidebar.querySelectorAll('.sidebar-item');
-            allSubChapterButtons.forEach((btn, index) => {
-                btn.classList.remove('active');
-            });
-
-            // Find the correct button to activate
             let buttonCounter = 0;
             materialData[currentMaterialSubject].forEach((chapter, cIdx) => {
                 chapter.subChapters.forEach((subChap, scIdx) => {
-                    if (cIdx === chapIndex && scIdx === subChapIndex) {
-                        allSubChapterButtons[buttonCounter].classList.add('active');
+                    const btn = allSubChapterButtons[buttonCounter];
+                    if (btn) { // Ensure button exists
+                        btn.classList.remove('active');
+                        if (cIdx === chapIndex && scIdx === subChapIndex) {
+                            btn.classList.add('active');
+                        }
                     }
                     buttonCounter++;
                 });
@@ -1798,108 +1883,131 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
             materialContentArea.scrollTop = 0; // Scroll to top of content
         }
 
+        // --- Local Storage Functions ---
+
+        /**
+         * Saves current quiz state to localStorage.
+         */
+        function saveQuizState() {
+            const quizState = {
+                questions: questions.map(q => ({
+                    question: q.question,
+                    options: q.options,
+                    correctAnswerIndex: q.correctAnswerIndex,
+                    explanation: q.explanation
+                })),
+                currentQuestionIndex: currentQuestionIndex,
+                userAnswers: userAnswers,
+                correctCount: correctCount,
+                incorrectCount: incorrectCount,
+                skippedCount: skippedCount,
+                currentQuizSubject: currentQuizSubject
+            };
+            localStorage.setItem('quizAppState', JSON.stringify(quizState));
+        }
+
+        /**
+         * Loads quiz state from localStorage.
+         * @returns {boolean} True if state was loaded, false otherwise.
+         */
+        function loadQuizState() {
+            const storedState = localStorage.getItem('quizAppState');
+            if (storedState) {
+                const quizState = JSON.parse(storedState);
+                questions = quizState.questions || [];
+                currentQuestionIndex = quizState.currentQuestionIndex || 0;
+                userAnswers = quizState.userAnswers || [];
+                correctCount = quizState.correctCount || 0;
+                incorrectCount = quizState.incorrectCount || 0;
+                skippedCount = quizState.skippedCount || 0;
+                currentQuizSubject = quizState.currentQuizSubject || '';
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Clears quiz state from localStorage.
+         */
+        function clearQuizState() {
+            localStorage.removeItem('quizAppState');
+        }
+
+
         // --- Utility Functions ---
 
         /**
-         * Function to parse a limited set of Markdown (bold, italic, newlines, basic lists, simple blockquotes)
+         * Function to parse a limited set of Markdown for content.
+         * Handles bold, italic, headings, unordered lists (* or -), ordered lists (1.), and paragraphs.
+         * Ensures no stray '*' appear from formatting.
          * @param {string} text - The markdown text to parse.
          * @returns {string} HTML string.
          */
         function parseMarkdown(text) {
             let html = text;
 
-            // Handle headings (very basic, H1-H4)
-            html = html.replace(/^#### (.*$)/gm, '<h4>$1</h4>');
-            html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
-            html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
-            html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            // Handle inline bold and italic first, as they can be within paragraphs or list items
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italic
 
-            // Handle bold: **text**
-            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Handle italic: *text*
-            html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Split text into blocks based on two or more newlines (paragraph separator)
+            const blocks = html.split(/\n\s*\n/);
+            let resultHtml = [];
 
-            // Handle unordered lists (lines starting with * or - followed by space)
-            html = html.replace(/^[*-] (.*)$/gm, '<li>$1</li>');
-            html = html.replace(/(<li>.*<\/li>(\s*<li>.*<\/li>)*)/g, '<ul>$1</ul>');
+            blocks.forEach(block => {
+                // Trim the block and split by single newline for processing lines within a block
+                let lines = block.trim().split('\n');
 
-            // Handle ordered lists (lines starting with 1. 2. etc.)
-            html = html.replace(/^(\d+)\. (.*)$/gm, '<li>$2</li>');
-            html = html.replace(/(<li>.*<\/li>(\s*<li>.*<\/li>)*)/g, (match) => {
-                if (match.startsWith('<li>')) { // Only wrap if it's actually a list item
-                    let isOrdered = true;
-                    // Check if all list items in this block are ordered
-                    // This is a simplification and might not catch mixed lists perfectly
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = match;
-                    const items = tempDiv.querySelectorAll('li');
-                    for (let i = 0; i < items.length; i++) {
-                        if (!items[i].textContent.match(/^\d+\.\s/)) { // If any item doesn't look like an ordered list item
-                            isOrdered = false;
-                            break;
-                        }
-                    }
-                    if (isOrdered) {
-                         // Remove numbers from the li content if it was matched as ordered
-                         return '<ol>' + match.replace(/<li>(\d+)\.\s(.*?)/g, '<li>$2') + '</ol>';
-                    }
+                // Skip empty blocks
+                if (lines.length === 0 || lines[0].trim() === '') {
+                    return;
                 }
-                return match; // Return as is if not an ordered list block
+
+                // Check for headings
+                if (lines[0].startsWith('#### ')) {
+                    resultHtml.push(`<h4>${lines[0].substring(5)}</h4>`);
+                } else if (lines[0].startsWith('### ')) {
+                    resultHtml.push(`<h3>${lines[0].substring(4)}</h3>`);
+                } else if (lines[0].startsWith('## ')) {
+                    resultHtml.push(`<h2>${lines[0].substring(3)}</h2>`);
+                } else if (lines[0].startsWith('# ')) {
+                    resultHtml.push(`<h1>${lines[0].substring(2)}</h1>`);
+                }
+                // Check for lists
+                else if (lines[0].match(/^[*-]\s/) || lines[0].match(/^\d+\.\s/)) {
+                    let isOrderedList = lines[0].match(/^\d+\.\s/);
+                    let listTag = isOrderedList ? 'ol' : 'ul';
+                    let listItemsHtml = '';
+
+                    lines.forEach(line => {
+                        let listItemContent = line.replace(/^[*-]\s/, '').replace(/^\d+\.\s/, '').trim();
+                        listItemsHtml += `<li>${listItemContent}</li>`;
+                    });
+                    resultHtml.push(`<${listTag}>${listItemsHtml}</${listTag}>`);
+                }
+                // Check for pre-formatted blocks (like tables) - simple heuristic
+                else if (block.includes('|') && block.trim().startsWith('|')) {
+                     resultHtml.push(`<pre class="bg-gray-100 p-2 rounded-md text-sm overflow-x-auto">${block}</pre>`);
+                }
+                // Otherwise, it's a regular paragraph
+                else {
+                    resultHtml.push(`<p>${lines.join('<br>')}</p>`); // Join lines with <br> for soft breaks within a paragraph
+                }
             });
 
-
-            // Handle newlines as <br> (but not within pre-formatted blocks)
-            // Replace newlines only if they are not already handled by list/heading regex
-            html = html.split('\n').map(line => {
-                if (!line.match(/<h[1-4]>|<\/h[1-4]>|<li|<ul|<ol|<pre/)) {
-                    return line;
-                }
-                return line;
-            }).join('<br>');
-
-
-            // Basic table handling (pre-formatted for simplicity, not actual HTML table tags)
-            // Looks for lines that might be part of a table (containing '|')
-            const lines = text.split('\n');
-            let inTableBlock = false;
-            let processedLines = [];
-            let currentTableBlock = [];
-
-            for (const line of lines) {
-                if (line.includes('|') && line.trim().startsWith('|')) { // Simple heuristic for table lines
-                    currentTableBlock.push(line);
-                    inTableBlock = true;
-                } else {
-                    if (inTableBlock) {
-                        // End of table block, process it
-                        processedLines.push('<pre class="bg-gray-100 p-2 rounded-md text-sm overflow-x-auto">');
-                        processedLines.push(currentTableBlock.join('\n'));
-                        processedLines.push('</pre>');
-                        currentTableBlock = [];
-                        inTableBlock = false;
-                    }
-                    processedLines.push(line); // Add non-table line
-                }
-            }
-            // Handle table block at the end of text
-            if (inTableBlock) {
-                processedLines.push('<pre class="bg-gray-100 p-2 rounded-md text-sm overflow-x-auto">');
-                processedLines.push(currentTableBlock.join('\n'));
-                processedLines.push('</pre>');
-            }
-            html = processedLines.join('\n'); // Rejoin with newlines for further processing
-
-            // Replace remaining simple newlines
-            html = html.replace(/\n/g, '<br>');
-
-
-            return html;
+            return resultHtml.join('');
         }
 
 
         // --- Event Listeners ---
         window.onload = () => {
-            showScreen('home-screen');
+            // Check for saved quiz state on page load
+            if (loadQuizState()) {
+                showScreen('quiz-screen');
+                loadQuestion(); // Load the question where user left off
+            } else {
+                showScreen('home-screen');
+            }
 
             // Quiz buttons
             startEkonomiQuizButton.addEventListener('click', () => startQuiz(ekonomiQuestions, 'ekonomi'));
@@ -1910,9 +2018,16 @@ Kerukunan adalah kondisi hidup berdampingan secara damai dan harmonis di tengah 
             backToHomeFromReviewButton.addEventListener('click', resetQuiz);
 
             // Material buttons
-            startEkonomiMaterialButton.addEventListener('click', () => startMaterial('ekonomi'));
-            startSosiologiMaterialButton.addEventListener('click', () => startMaterial('sosiologi'));
+            startEkonomiMaterialButton.addEventListener('click', () => startMaterial('ekonomi', false)); // false = not from quiz
+            startSosiologiMaterialButton.addEventListener('click', () => startMaterial('sosiologi', false)); // false = not from quiz
             backToHomeFromMaterialButton.addEventListener('click', resetQuiz);
+            backToQuizFromMaterialButton.addEventListener('click', () => {
+                // This button should only be visible/enabled if quiz state exists
+                // and user desires to go back to quiz.
+                // The loadQuizState() ensures 'questions' and 'currentQuestionIndex' are correctly set.
+                showScreen('quiz-screen');
+                loadQuestion(); // Reloads the question user was on
+            });
         };
     </script>
 </body>
