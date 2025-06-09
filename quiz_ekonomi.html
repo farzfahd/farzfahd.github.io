@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Ekonomi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrolling on results */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #app-container {
+            background-color: #ffffff;
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            max-width: 1000px; /* Increased max width */
+            width: 100%;
+            margin-top: 20px;
+        }
+        .option-button {
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left; /* Ensure text aligns left */
+            min-height: 48px; /* Ensure sufficient tap target size for mobile */
+        }
+        .option-button:hover:not(.selected):not(.correct):not(.incorrect) {
+            background-color: #e2e8f0; /* bg-blue-100 equivalent */
+        }
+        .option-button.selected {
+            border-color: #3b82f6; /* ring-blue-500 equivalent */
+            background-color: #bfdbfe; /* bg-blue-200 equivalent */
+        }
+        .option-button.correct {
+            background-color: #d1fae5; /* bg-green-100 equivalent */
+            border-color: #10b981; /* ring-green-500 equivalent */
+        }
+        .option-button.incorrect {
+            background-color: #fee2e2; /* bg-red-100 equivalent */
+            border-color: #ef4444; /* ring-red-500 equivalent */
+        }
+        .feedback-icon {
+            font-size: 1.5rem;
+            margin-left: 10px;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+        .feedback-text {
+            color: #4a5568; /* text-gray-700 */
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .correct-text {
+            color: #10b981; /* green-500 */
+        }
+        .incorrect-text {
+            color: #ef4444; /* red-500 */
+        }
+        /* Markdown rendering adjustments for material content (used in review) */
+        .material-content h1, .material-content h2, .material-content h3, .material-content h4 {
+            font-weight: bold;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+        }
+        .material-content h1 { font-size: 2.25rem; } /* text-4xl */
+        .material-content h2 { font-size: 1.875rem; } /* text-3xl */
+        .material-content h3 { font-size: 1.5rem; } /* text-2xl */
+        .material-content h4 { font-size: 1.25rem; } /* text-xl */
+
+        .material-content p {
+            margin-bottom: 1em;
+            line-height: 1.7;
+        }
+        .material-content ul {
+            list-style-type: disc;
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+        .material-content ol {
+            list-style-type: decimal;
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+        .material-content li {
+            margin-bottom: 0.5em;
+        }
+        .material-content strong {
+            font-weight: bold;
+        }
+        .material-content em {
+            font-style: italic;
+        }
+        .material-content pre {
+            background-color: #f7fafc; /* gray-50 */
+            border: 1px solid #e2e8f0; /* gray-200 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1em;
+            overflow-x: auto; /* For long lines in code/pre blocks */
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            #app-container {
+                padding: 1.5rem;
+            }
+            .option-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+            .feedback-icon {
+                font-size: 1.25rem;
+            }
+            .feedback-text {
+                font-size: 0.85rem;
+            }
+            #result-screen .grid {
+                grid-template-columns: 1fr; /* Stack scores vertically on small screens */
+            }
+        }
+    </style>
+</head>
+<body class="selection:bg-blue-300 selection:text-white">
+    <div id="app-container" class="relative">
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="flex flex-col p-8">
+            <div class="flex justify-between items-center mb-4">
+                <a href="index.html" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H16a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Beranda
+                </a>
+                <button id="prev-button" class="text-gray-600 hover:text-gray-800 font-semibold flex items-center mr-auto ml-4" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-180 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H16a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Sebelumnya
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-2"><span id="question-counter"></span></p>
+                <div id="question-text" class="text-xl font-medium text-gray-800 mb-6 leading-relaxed"></div>
+            </div>
+
+            <div id="options-container" class="flex flex-col gap-4 mb-6">
+                <!-- Options will be loaded here by JavaScript -->
+            </div>
+
+            <div id="feedback-area" class="min-h-[100px] bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 text-gray-700 transition-all duration-300 ease-in-out">
+                <!-- Feedback and explanation will be shown here -->
+            </div>
+
+            <button id="next-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-end w-full md:w-auto opacity-50 cursor-not-allowed" disabled>
+                Lanjut
+            </button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden flex-col items-center justify-center p-8 text-center">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-6">Hasil Kuis Anda!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left w-full max-w-md mb-8">
+                <div class="bg-green-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-green-600 font-bold" id="correct-score">0</span>
+                    <span class="text-lg text-green-800">Benar</span>
+                </div>
+                <div class="bg-red-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-red-600 font-bold" id="incorrect-score">0</span>
+                    <span class="text-lg text-red-800">Salah</span>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-yellow-600 font-bold" id="skipped-score">0</span>
+                    <span class="text-lg text-yellow-800">Dikosongi</span>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-4 w-full max-w-md justify-center">
+                <button id="review-button" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto">
+                    Tinjau Jawaban
+                </button>
+                <button id="go-to-material-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out w-full md:w-auto">
+                    Menuju Materi
+                </button>
+                <a href="index.html" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto text-center">
+                    Mulai Ulang Kuis
+                </a>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="review-screen" class="hidden flex-col p-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-6 text-center">Tinjauan Kuis</h2>
+            <div id="review-container" class="flex flex-col gap-8">
+                <!-- Reviewed questions will be loaded here -->
+            </div>
+            <a href="index.html" class="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-center w-full md:w-auto text-center">
+                Kembali ke Beranda
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // Data Soal Ekonomi (hanya data ekonomi di sini)
+        const questions = [
+            {
+                question: "Berikut ini yang merupakan contoh bank swasta nasional adalah...",
+                options: ["Bank Mandiri", "Bank Rakyat Indonesia (BRI)", "Bank Central Asia (BCA)", "Bank Negara Indonesia (BNI)", "Bank Syariah Indonesia (BSI)"],
+                correctAnswerIndex: 2,
+                explanation: "Bank Central Asia (BCA) adalah salah satu contoh bank swasta nasional terbesar di Indonesia, sedangkan Bank Mandiri, BRI, BNI, dan BSI adalah bank BUMN atau gabungan BUMN."
+            },
+            {
+                question: "Salah satu dampak negatif yang mungkin timbul dari pengajuan kredit yang berlebihan adalah...",
+                options: ["Meningkatkan pendapatan individu", "Mendorong pertumbuhan ekonomi", "Terjerat utang dan kesulitan finansial", "Memudahkan investasi jangka panjang", "Meningkatkan daya beli masyarakat"],
+                correctAnswerIndex: 2,
+                explanation: "Pengajuan kredit yang berlebihan dapat menyebabkan individu terjerat utang dan mengalami kesulitan finansial jika tidak mampu melunasi kewajibannya."
+            },
+            {
+                question: "Jika seseorang ingin menyimpan uangnya agar aman dan mendapatkan bunga, produk bank yang paling sesuai adalah...",
+                options: ["Kredit Investasi", "Tabungan", "Deposito", "Giro", "Letter of Credit"],
+                correctAnswerIndex: 2,
+                explanation: "Deposito adalah produk simpanan berjangka di bank yang memberikan bunga lebih tinggi dibandingkan tabungan biasa dan memiliki jatuh tempo tertentu."
+            },
+            {
+                question: "Perbedaan mendasar antara saham dan obligasi terletak pada...",
+                options: ["Obligasi memberikan hak kepemilikan, sedangkan saham adalah bukti utang.", "Saham memberikan bunga, sedangkan obligasi memberikan dividen.", "Saham memberikan hak kepemilikan, sedangkan obligasi adalah bukti utang.", "Keduanya adalah bukti kepemilikan perusahaan.", "Keduanya adalah bukti utang jangka pendek."],
+                correctAnswerIndex: 2,
+                explanation: "Saham adalah bukti kepemilikan sebagian perusahaan, sementara obligasi adalah surat utang yang diterbitkan oleh perusahaan atau pemerintah."
+            },
+            {
+                question: "Menurut UU No. 21 Tahun 2011, Lembaga Keuangan didefinisikan sebagai...",
+                options: ["Badan usaha yang bergerak di bidang perdagangan.", "Perusahaan yang hanya menerima simpanan nasabah.", "Lembaga yang melakukan kegiatan di sektor pasar modal.", "Lembaga yang melaksanakan kegiatan di sektor jasa keuangan.", "Perusahaan yang memberikan pinjaman tanpa bunga."],
+                correctAnswerIndex: 3,
+                explanation: "Menurut UU No. 21 Tahun 2011 tentang OJK, Lembaga Jasa Keuangan adalah lembaga yang melaksanakan kegiatan di sektor jasa keuangan."
+            },
+            {
+                question: "Prinsip perbankan syariah yang melarang praktik riba adalah prinsip...",
+                options: ["Kehati-hatian", "Bagi hasil (Mudharabah)", "Transparansi", "Keadilan", "Amanah"],
+                correctAnswerIndex: 1,
+                explanation: "Prinsip bagi hasil (Mudharabah, Musyarakah, dll.) merupakan salah satu prinsip utama perbankan syariah yang menggantikan sistem bunga (riba)."
+            },
+            {
+                question: "Berdasarkan kepemilikannya, bank yang mayoritas sahamnya dimiliki oleh swasta disebut bank...",
+                options: ["Bank Umum Pemerintah", "Bank Sentral", "Bank Swasta Nasional", "Bank Campuran", "Bank Asing"],
+                correctAnswerIndex: 2,
+                explanation: "Bank Swasta Nasional adalah bank yang sebagian besar modalnya dimiliki oleh pihak swasta dalam negeri."
+            },
+            {
+                question: "Produk perbankan yang termasuk dalam 'kredit pasif' adalah...",
+                options: ["Kredit Modal Kerja", "Kredit Investasi", "Deposito Berjangka", "Kredit Konsumsi", "Kredit Serbaguna"],
+                correctAnswerIndex: 2,
+                explanation: "Kredit pasif adalah bentuk penghimpunan dana dari masyarakat oleh bank, seperti tabungan, giro, dan deposito."
+            },
+            {
+                question: "Nama gabungan dari tiga bank syariah BUMN yang resmi beroperasi pada 1 Februari 2021 adalah...",
+                options: ["Bank Mega Syariah", "Bank Muamalat Indonesia", "Bank Syariah Mandiri", "Bank Syariah Indonesia (BSI)", "Bank Bukopin Syariah"],
+                correctAnswerIndex: 3,
+                explanation: "Bank Syariah Indonesia (BSI) adalah hasil merger dari Bank Syariah Mandiri, BNI Syariah, dan BRIsyariah."
+            },
+            {
+                question: "Seseorang ingin melakukan transaksi pembayaran secara tunai, produk perbankan yang tidak sesuai untuk transaksi ini adalah...",
+                options: ["Uang tunai", "Cek", "Kartu Debit", "Kartu Kredit", "E-wallet"],
+                correctAnswerIndex: 0,
+                explanation: "Uang tunai adalah alat pembayaran tunai. Pilihan lain seperti Cek, Kartu Debit, Kartu Kredit, dan E-wallet adalah instrumen pembayaran non-tunai yang memfasilitasi transaksi tanpa menggunakan fisik uang tunai."
+            },
+            {
+                question: "Lembaga Keuangan Bukan Bank (LKBB) yang berfokus pada pembiayaan pendidikan adalah...",
+                options: ["Dana Pensiun", "Perusahaan Pembiayaan (Leasing)", "Koperasi Simpan Pinjam", "Lembaga Pendidikan Swasta", "Dana Pendidikan (misal: beasiswa yang dikelola lembaga)"],
+                correctAnswerIndex: 4,
+                explanation: "LKBB yang berfokus pada pembiayaan pendidikan seringkali berupa lembaga atau yayasan yang mengelola dana pendidikan atau beasiswa."
+            },
+            {
+                question: "Lembaga Keuangan Bukan Bank (LKBB) yang berfungsi untuk mengelola dana bagi peserta yang telah memasuki masa pensiun adalah...",
+                options: ["Asuransi", "Pegadaian", "Dana Pensiun", "Sekuritas", "Modal Ventura"],
+                correctAnswerIndex: 2,
+                explanation: "Dana Pensiun adalah lembaga yang mengelola dan membayarkan manfaat pensiun kepada pesertanya."
+            },
+            {
+                question: "Salah satu kekurangan utama dari digitalisasi perbankan adalah...",
+                options: ["Mempermudah akses bagi masyarakat", "Mengurangi biaya operasional bank", "Rentan terhadap serangan siber dan penipuan online", "Meningkatkan efisiensi transaksi", "Memperluas jangkauan layanan bank"],
+                correctAnswerIndex: 2,
+                explanation: "Meskipun memiliki banyak keuntungan, digitalisasi perbankan juga meningkatkan risiko keamanan data dan menjadi target serangan siber serta penipuan online."
+            },
+            {
+                question: "Istilah lain yang sering digunakan untuk pinjaman online adalah...",
+                options: ["Investasi", "Asuransi", "FinTech Lending (Pinjol)", "Tabungan digital", "Deposito online"],
+                correctAnswerIndex: 2,
+                explanation: "FinTech Lending atau biasa disingkat Pinjol adalah istilah umum untuk pinjaman online."
+            },
+            {
+                question: "Berikut ini yang merupakan contoh bank digital di Indonesia adalah...",
+                options: ["Bank BCA", "Bank Mandiri", "Bank Jago", "Bank BNI", "Bank BRI"],
+                correctAnswerIndex: 2,
+                explanation: "Bank Jago adalah salah satu contoh bank digital yang beroperasi penuh secara digital di Indonesia."
+            },
+            {
+                question: "Salah satu layanan utama yang ditawarkan oleh bank digital adalah...",
+                options: ["Pembukaan rekening secara fisik di kantor cabang", "Pengambilan uang tunai hanya di teller", "Transfer dan pembayaran tagihan melalui aplikasi mobile", "Pengajuan kredit harus datang ke kantor cabang", "Layanan terbatas hanya untuk nasabah korporasi"],
+                correctAnswerIndex: 2,
+                explanation: "Bank digital fokus pada layanan berbasis aplikasi mobile untuk mempermudah transaksi seperti transfer dan pembayaran tagihan."
+            },
+            {
+                question: "Tujuan utama Bank Indonesia sebagai bank sentral adalah...",
+                options: ["Mencari keuntungan sebesar-besarnya.", "Menjaga stabilitas nilai rupiah.", "Memberikan kredit kepada masyarakat.", "Mengatur harga barang di pasar.", "Mengelola kas negara."],
+                correctAnswerIndex: 1,
+                explanation: "Tujuan utama Bank Indonesia adalah mencapai dan memelihara stabilitas nilai rupiah."
+            },
+            {
+                question: "Salah satu kegiatan yang dilakukan oleh bank sentral adalah...",
+                options: ["Memberikan pinjaman langsung kepada individu.", "Mengatur dan mengawasi perbankan.", "Menerima simpanan dari masyarakat umum.", "Menjual produk asuransi.", "Mengelola investasi saham."],
+                correctAnswerIndex: 1,
+                explanation: "Bank sentral memiliki peran vital dalam mengatur dan mengawasi kebijakan moneter serta sistem perbankan."
+            },
+            {
+                question: "Berikut ini yang paling sesuai dengan fungsi Bank Sentral sebagai 'banker's bank' adalah...",
+                options: ["Menerima simpanan dari masyarakat.", "Memberikan pinjaman kepada bank-bank lain.", "Mengatur suku bunga tabungan.", "Menjual obligasi pemerintah.", "Mencetak uang tunai."],
+                correctAnswerIndex: 1,
+                explanation: "'Banker's bank' berarti bank sentral bertindak sebagai bank bagi bank-bank umum, salah satunya dengan memberikan pinjaman atau fasilitas likuiditas."
+            },
+            {
+                question: "Lembaga yang menggantikan fungsi Bank Indonesia dalam mengatur dan mengawasi bank secara mikroprudensial adalah...",
+                options: ["Kementerian Keuangan", "Otoritas Jasa Keuangan (OJK)", "Lembaga Penjamin Simpanan (LPS)", "Badan Pusat Statistik (BPS)", "Bursa Efek Indonesia (BEI)"],
+                correctAnswerIndex: 1,
+                explanation: "Otoritas Jasa Keuangan (OJK) mengambil alih tugas pengaturan dan pengawasan mikroprudensial perbankan dari Bank Indonesia sejak tahun 2013."
+            },
+            {
+                question: "Tahap pengelolaan uang yang sesuai, setelah uang dicetak, adalah...",
+                options: ["Dimusnahkan", "Ditarik dari peredaran", "Diedarkan", "Disimpan di Bank Umum", "Ditimbun di Bank Sentral"],
+                correctAnswerIndex: 2,
+                explanation: "Setelah dicetak, uang baru akan diedarkan ke masyarakat melalui bank-bank umum."
+            },
+            {
+                question: "Salah satu wewenang OJK yang sesuai adalah...",
+                options: ["Menentukan kebijakan moneter.", "Mengatur dan mengawasi lembaga jasa keuangan.", "Mencetak uang rupiah.", "Mengelola cadangan devisa negara.", "Memberikan pinjaman kepada pemerintah."],
+                correctAnswerIndex: 1,
+                explanation: "OJK memiliki wewenang luas dalam mengatur dan mengawasi seluruh kegiatan di sektor jasa keuangan."
+            },
+            {
+                question: "Istilah atau sebutan bagi anggota dewan komisioner OJK adalah...",
+                options: ["Komisaris", "Direksi", "Dewan Pengawas", "Anggota Dewan Komisioner", "Pejabat Tinggi"],
+                correctAnswerIndex: 3,
+                explanation: "Jabatan tertinggi di OJK adalah Anggota Dewan Komisioner, yang dipimpin oleh Ketua Dewan Komisioner."
+            },
+            {
+                question: "Ketua Dewan Komisioner OJK saat ini (berdasarkan informasi umum) adalah...",
+                options: ["Gubernur Bank Indonesia", "Menteri Keuangan", "Kepala Eksekutif LPS", "Mahendra Siregar (per Maret 2024)", "Perry Warjiyo"],
+                correctAnswerIndex: 3,
+                explanation: "Mahendra Siregar adalah Ketua Dewan Komisioner OJK saat ini (informasi per Maret 2024)."
+            },
+            {
+                question: "Jika terjadi permasalahan terkait investasi bodong yang merugikan masyarakat, bidang OJK yang paling relevan untuk menangani masalah tersebut adalah...",
+                options: ["Perbankan", "Pasar Modal", "Industri Keuangan Non Bank (IKNB)", "Edukasi dan Perlindungan Konsumen", "Pengawasan Bank Sentral"],
+                correctAnswerIndex: 3,
+                explanation: "Divisi Edukasi dan Perlindungan Konsumen OJK memiliki peran penting dalam menangani pengaduan dan permasalahan yang merugikan konsumen jasa keuangan, termasuk investasi bodong."
+            },
+            {
+                question: "Pernyataan yang benar mengenai tugas OJK dan BI adalah...",
+                options: ["OJK mengatur kebijakan moneter, BI mengawasi perbankan.", "OJK mengatur dan mengawasi seluruh lembaga jasa keuangan, BI menjaga stabilitas nilai rupiah.", "Keduanya memiliki tugas yang sama dalam mencetak uang.", "BI mengatur industri asuransi, OJK mengawasi bank sentral.", "OJK hanya berwenang di pasar modal, BI hanya di perbankan."],
+                correctAnswerIndex: 1,
+                explanation: "OJK mengatur dan mengawasi seluruh lembaga jasa keuangan (bank, IKNB, pasar modal), sementara BI fokus pada kebijakan moneter untuk menjaga stabilitas nilai rupiah."
+            },
+            {
+                question: "Lembaga yang menjamin simpanan nasabah bank di Indonesia adalah...",
+                options: ["Bank Indonesia (BI)", "Otoritas Jasa Keuangan (OJK)", "Lembaga Penjamin Simpanan (LPS)", "Kementerian Keuangan", "Perbankan itu sendiri"],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga Penjamin Simpanan (LPS) bertugas menjamin simpanan nasabah bank di Indonesia."
+            },
+            {
+                question: "Berikut ini yang merupakan sistem pembayaran adalah...",
+                options: ["Proses pertukaran barang secara barter.", "Mekanisme pemindahan dana antarpihak.", "Penentuan harga produk di pasar.", "Pemberian pinjaman oleh bank.", "Pengelolaan kas perusahaan."],
+                correctAnswerIndex: 1,
+                explanation: "Sistem pembayaran adalah seperangkat aturan, lembaga, dan mekanisme yang digunakan untuk memindahkan dana guna memenuhi suatu kewajiban yang timbul dari suatu kegiatan ekonomi."
+            },
+            {
+                question: "EDC adalah singkatan dari...",
+                options: ["Electronic Data Capture", "Economic Development Center", "European Digital Currency", "Enhanced Data Communication", "Electronic Device Control"],
+                correctAnswerIndex: 0,
+                explanation: "EDC singkatan dari Electronic Data Capture, yaitu alat yang digunakan untuk memproses transaksi kartu debit/kredit."
+            },
+            {
+                question: "Jika Anda ingin melakukan transaksi pembayaran di toko ritel dengan menggunakan kartu debit atau kredit, infrastruktur pembayaran yang sesuai adalah...",
+                options: ["RTGS", "Kliring", "EDC Terminal", "ATM", "Internet Banking"],
+                correctAnswerIndex: 2,
+                explanation: "EDC Terminal adalah alat yang digunakan di toko-toko untuk memproses pembayaran menggunakan kartu debit atau kartu kredit."
+            },
+            {
+                question: "Dua lembaga yang bekerjasama dalam pengembangan dan implementasi QRIS adalah...",
+                options: ["Bank Indonesia dan Kementerian Keuangan", "Otoritas Jasa Keuangan dan Lembaga Penjamin Simpanan", "Bank Indonesia dan Asosiasi Sistem Pembayaran Indonesia (ASPI)", "Bank Umum dan Bank Perkreditan Rakyat", "Perusahaan Teknologi dan Otoritas Jasa Keuangan"],
+                correctAnswerIndex: 2,
+                explanation: "QRIS dikembangkan dan diimplementasikan oleh Bank Indonesia bekerja sama dengan Asosiasi Sistem Pembayaran Indonesia (ASPI)."
+            },
+            {
+                question: "Usaha yang tidak bisa menggunakan stiker QRIS adalah...",
+                options: ["Pedagang kaki lima", "Toko kelontong", "Perusahaan multinasional dengan transaksi besar", "Tukang parkir", "Warung makan sederhana"],
+                correctAnswerIndex: 2,
+                explanation: "QRIS ditujukan untuk memfasilitasi transaksi pembayaran retail skala kecil hingga menengah. Perusahaan multinasional dengan transaksi besar biasanya memiliki sistem pembayaran yang lebih kompleks."
+            },
+            {
+                question: "Tipe pembayaran QRIS yang paling umum digunakan oleh konsumen untuk melakukan pembayaran adalah...",
+                options: ["QRIS Merchant Presented Mode (MPM) Statis", "QRIS Customer Presented Mode (CPM)", "QRIS Merchant Presented Mode (MPM) Dinamis", "QRIS Transfer", "QRIS Tarik Tunai"],
+                correctAnswerIndex: 0,
+                explanation: "QRIS Merchant Presented Mode (MPM) Statis adalah yang paling umum, di mana QR code tetap ada di merchant dan discan oleh konsumen."
+            },
+            {
+                question: "Peran bank sentral dalam sistem pembayaran adalah...",
+                options: ["Hanya sebagai pengguna sistem pembayaran.", "Mengatur, mengawasi, dan mengembangkan sistem pembayaran.", "Memberikan pinjaman kepada penyedia layanan pembayaran.", "Menentukan tarif biaya transaksi pembayaran.", "Mengelola semua transaksi pembayaran secara langsung."],
+                correctAnswerIndex: 1,
+                explanation: "Bank sentral memiliki peran krusial sebagai regulator, pengawas, dan pengembang sistem pembayaran nasional."
+            },
+            {
+                question: "Salah satu unsur pengaman rupiah yang benar adalah...",
+                options: ["Adanya tulisan braille di setiap pecahan uang.", "Gambar pahlawan yang bisa berubah warna.", "Benang pengaman yang tertanam di kertas uang.", "Hologram tiga dimensi yang sangat besar.", "Nomor seri yang hanya terlihat dengan sinar UV."],
+                correctAnswerIndex: 2,
+                explanation: "Benang pengaman yang tertanam di kertas uang adalah salah satu unsur pengaman rupiah yang mudah dikenali."
+            },
+            {
+                question: "Unsur pengaman rupiah yang bertujuan untuk membantu tunanetra adalah...",
+                options: ["Gambar tersembunyi (latent image)", "Tanda air (watermark)", "Kode tunanetra (blind code)", "Desain mikroteks", "Tinta berubah warna (color shifting ink)"],
+                correctAnswerIndex: 2,
+                explanation: "Kode tunanetra (atau rabaan) berupa pasangan garis di samping kiri dan kanan uang kertas membantu tunanetra mengenali nilai nominal uang."
+            },
+            {
+                question: "Berikut ini yang merupakan contoh e-wallet (dompet digital) adalah...",
+                options: ["Kartu Debit", "Kartu Kredit", "GoPay", "Cek", "Bilyet Giro"],
+                correctAnswerIndex: 2,
+                explanation: "GoPay adalah salah satu contoh dompet digital atau e-wallet yang populer di Indonesia."
+            },
+            {
+                question: "Contoh transaksi non-tunai yang paling tepat adalah...",
+                options: ["Membayar belanjaan dengan uang kertas di pasar.", "Membayar tagihan listrik menggunakan aplikasi mobile banking.", "Menerima upah dalam bentuk uang tunai.", "Menarik uang tunai dari ATM.", "Membeli barang dengan sistem barter."],
+                correctAnswerIndex: 1,
+                explanation: "Membayar tagihan listrik melalui mobile banking adalah contoh transaksi non-tunai karena tidak melibatkan uang fisik."
+            },
+            {
+                question: "Persamaan antara kartu debit dan e-wallet sebagai instrumen non-tunai adalah...",
+                options: ["Keduanya bisa digunakan untuk tarik tunai di ATM.", "Keduanya memerlukan PIN untuk setiap transaksi.", "Keduanya merupakan media pembayaran non-tunai.", "Keduanya selalu terhubung langsung dengan rekening bank.", "Keduanya hanya bisa digunakan untuk transaksi online."],
+                correctAnswerIndex: 2,
+                explanation: "Baik kartu debit maupun e-wallet adalah media atau instrumen yang memungkinkan pembayaran tanpa menggunakan uang tunai fisik."
+            },
+            {
+                question: "Penerapan fungsi uang sebagai 'alat tukar' yang sesuai adalah...",
+                options: ["Menabung uang di bank untuk masa depan.", "Menggunakan uang untuk membeli makanan.", "Menjadikan uang sebagai standar nilai barang.", "Menyimpan uang di rumah sebagai cadangan.", "Menggunakan uang sebagai alat pembayaran utang."],
+                correctAnswerIndex: 1,
+                explanation: "Uang berfungsi sebagai alat tukar ketika digunakan untuk memperoleh barang atau jasa, seperti membeli makanan."
+            }
+        ];
+
+        // Global variables for quiz state
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Stores { questionIndex: index, selectedOption: optionIndex, isCorrect: boolean }
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let skippedCount = 0;
+        let isAnswerSelected = false; // To prevent multiple selections for a single question
+        const currentQuizSubject = 'ekonomi'; // Fixed for this file
+
+        // Get DOM elements
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const reviewScreen = document.getElementById('review-screen');
+
+        const questionCounter = document.getElementById('question-counter');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const prevButton = document.getElementById('prev-button'); // New
+        const nextButton = document.getElementById('next-button');
+
+        const correctScoreSpan = document.getElementById('correct-score');
+        const incorrectScoreSpan = document.getElementById('incorrect-score');
+        const skippedScoreSpan = document.getElementById('skipped-score');
+        const reviewButton = document.getElementById('review-button');
+        const goToMaterialButton = document.getElementById('go-to-material-button');
+        // Restart button on result screen
+        const restartButtonLink = document.querySelector('#result-screen a'); // Link to index.html for restart
+        // Back to home from review screen
+        const reviewBackToHomeLink = document.querySelector('#review-screen a'); // Link to index.html from review
+
+        // --- Functions ---
+
+        /**
+         * Hides all main screens and displays the specified one.
+         * @param {string} screenId - The ID of the screen to show.
+         */
+        function showScreen(screenId) {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            reviewScreen.classList.add('hidden');
+
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.remove('hidden');
+                targetScreen.classList.add('flex'); // Ensure flex display for centering or layout
+            }
+        }
+
+        /**
+         * Initializes the quiz for this subject.
+         */
+        function initializeQuiz() {
+            const quizState = loadQuizState(currentQuizSubject);
+            if (quizState) {
+                currentQuestionIndex = quizState.currentQuestionIndex || 0;
+                userAnswers = quizState.userAnswers || [];
+                correctCount = quizState.correctCount || 0;
+                incorrectCount = quizState.incorrectCount || 0;
+                skippedCount = quizState.skippedCount || 0;
+                console.log('Resuming quiz for', currentQuizSubject, 'at question', currentQuestionIndex + 1);
+            } else {
+                clearQuizState(currentQuizSubject);
+                currentQuestionIndex = 0;
+                userAnswers = [];
+                correctCount = 0;
+                incorrectCount = 0;
+                skippedCount = 0;
+                console.log('Starting new quiz for', currentQuizSubject);
+            }
+
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        /**
+         * Loads and displays the current question.
+         */
+        function loadQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const question = questions[currentQuestionIndex];
+
+                questionCounter.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+                questionText.innerHTML = parseMarkdown(question.question);
+                optionsContainer.innerHTML = ''; // Clear previous options
+
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = `option-button bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg shadow-sm transition duration-200 w-full text-left ring-1 ring-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400`;
+                    button.onclick = () => handleAnswer(index);
+                    optionsContainer.appendChild(button);
+                });
+
+                feedbackArea.innerHTML = ''; // Clear feedback area
+                nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+                nextButton.disabled = true;
+                isAnswerSelected = false; // Allow new selection for this question
+
+                // Manage prev button state
+                if (currentQuestionIndex === 0) {
+                    prevButton.classList.add('opacity-50', 'cursor-not-allowed');
+                    prevButton.disabled = true;
+                } else {
+                    prevButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    prevButton.disabled = false;
+                }
+
+                // If loading from saved state, re-apply visual feedback for the current question if already answered
+                const savedAnswer = userAnswers[currentQuestionIndex];
+                if (savedAnswer && savedAnswer.selectedOption !== null) {
+                    isAnswerSelected = true; // Mark as answered
+                    nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    nextButton.disabled = false;
+                    applyFeedbackToOptions(savedAnswer.selectedOption, savedAnswer.isCorrect, question);
+                    feedbackArea.innerHTML = `
+                        <p class="font-semibold mb-2 ${savedAnswer.isCorrect ? 'correct-text' : 'incorrect-text'}">
+                            ${savedAnswer.isCorrect ? 'Jawaban Anda Benar!' : 'Jawaban Anda Salah.'}
+                        </p>
+                        <p class="feedback-text">
+                            <strong>Pembahasan:</strong> ${question.explanation}
+                        </p>
+                    `;
+                }
+
+            } else {
+                showResultScreen();
+            }
+        }
+
+        /**
+         * Applies visual feedback to option buttons.
+         * @param {number} selectedIndex - The index of the option chosen by the user.
+         * @param {boolean} isCorrect - Whether the selected answer was correct.
+         * @param {object} question - The current question object.
+         */
+        function applyFeedbackToOptions(selectedIndex, isCorrect, question) {
+            const optionButtons = optionsContainer.children;
+            Array.from(optionButtons).forEach((button, index) => {
+                button.disabled = true; // Disable all options
+                button.classList.remove('hover:bg-gray-200'); // Remove hover effect
+
+                if (index === selectedIndex) {
+                    button.classList.add('selected');
+                    if (isCorrect) {
+                        button.classList.add('correct');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                    } else {
+                        button.classList.add('incorrect');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-red-600">✖</span>`;
+                    }
+                }
+
+                // Always show the correct answer with a green highlight if it's different from selected
+                if (index === question.correctAnswerIndex && (index !== selectedIndex || isCorrect)) {
+                    button.classList.add('correct');
+                    button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                }
+            });
+        }
+
+
+        /**
+         * Handles the user's answer selection.
+         * @param {number} selectedIndex - The index of the option chosen by the user.
+         */
+        function handleAnswer(selectedIndex) {
+            if (isAnswerSelected) return; // Prevent multiple clicks on options
+
+            isAnswerSelected = true;
+            const currentQuestion = questions[currentQuestionIndex];
+            const isCorrect = (selectedIndex === currentQuestion.correctAnswerIndex);
+
+            // Check if this question was already answered and if the answer changed
+            const previousAnswer = userAnswers[currentQuestionIndex];
+            if (previousAnswer && previousAnswer.selectedOption !== null) {
+                // If previously answered and now re-answered, adjust counts
+                if (previousAnswer.isCorrect && !isCorrect) {
+                    correctCount--;
+                    incorrectCount++;
+                } else if (!previousAnswer.isCorrect && isCorrect) {
+                    incorrectCount--;
+                    correctCount++;
+                }
+            } else if (previousAnswer && previousAnswer.selectedOption === null) {
+                // If previously skipped, but now answered
+                skippedCount--;
+                if (isCorrect) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            } else {
+                // First time answering this question
+                if (isCorrect) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            }
+
+            // Store the answer
+            userAnswers[currentQuestionIndex] = {
+                questionIndex: currentQuestionIndex,
+                selectedOption: selectedIndex,
+                isCorrect: isCorrect,
+                subject: currentQuizSubject
+            };
+
+            applyFeedbackToOptions(selectedIndex, isCorrect, currentQuestion);
+
+            // Show explanation
+            feedbackArea.innerHTML = `
+                <p class="font-semibold mb-2 ${isCorrect ? 'correct-text' : 'incorrect-text'}">
+                    ${isCorrect ? 'Jawaban Anda Benar!' : 'Jawaban Anda Salah.'}
+                </p>
+                <p class="feedback-text">
+                    <strong>Pembahasan:</strong> ${currentQuestion.explanation}
+                </p>
+            `;
+
+            nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            nextButton.disabled = false;
+            saveQuizState(currentQuizSubject); // Save state after each answer
+        }
+
+        /**
+         * Moves to the previous question.
+         */
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        /**
+         * Moves to the next question or finishes the quiz.
+         */
+        function nextQuestion() {
+            // If user did not select an answer before clicking next, it's skipped
+            if (!isAnswerSelected) {
+                const previousAnswer = userAnswers[currentQuestionIndex];
+                if (!previousAnswer || previousAnswer.selectedOption === null) {
+                    userAnswers[currentQuestionIndex] = {
+                        questionIndex: currentQuestionIndex,
+                        selectedOption: null, // Indicates skipped
+                        isCorrect: false, // Skipped is counted as incorrect for scoring purposes
+                        subject: currentQuizSubject
+                    };
+                    skippedCount++;
+                }
+            }
+            saveQuizState(currentQuizSubject); // Save state before moving to the next question
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        /**
+         * Displays the final result screen.
+         */
+        function showResultScreen() {
+            // Recalculate scores based on userAnswers to ensure accuracy after resuming from local storage
+            correctCount = userAnswers.filter(a => a.isCorrect).length;
+            incorrectCount = userAnswers.filter(a => a.selectedOption !== null && !a.isCorrect).length;
+            skippedCount = userAnswers.filter(a => a.selectedOption === null).length;
+
+            correctScoreSpan.textContent = correctCount;
+            incorrectScoreSpan.textContent = incorrectCount;
+            skippedScoreSpan.textContent = skippedCount;
+
+            // Set up the "Go to Material" button
+            goToMaterialButton.onclick = () => {
+                // Navigate to material.html, passing the subject and a flag that it came from quiz
+                window.location.href = `material.html?subject=${currentQuizSubject}&fromQuiz=true`;
+            };
+
+            showScreen('result-screen');
+            clearQuizState(currentQuizSubject); // Clear state after quiz is finished and results are shown
+        }
+
+        /**
+         * Displays all questions with user's answers, correct answers, and explanations.
+         */
+        function reviewQuiz() {
+            showScreen('review-screen');
+            reviewContainer.innerHTML = ''; // Clear previous review content
+
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const selectedOptionText = userAnswer && userAnswer.selectedOption !== null ? question.options[userAnswer.selectedOption] : 'Tidak dijawab';
+                const correctAnswerText = question.options[question.correctAnswerIndex];
+                const isCorrect = (userAnswer && userAnswer.isCorrect);
+
+                const questionReviewDiv = document.createElement('div');
+                questionReviewDiv.className = `p-5 rounded-lg shadow-md ${isCorrect ? 'bg-green-50' : (userAnswer && userAnswer.selectedOption !== null ? 'bg-red-50' : 'bg-yellow-50')} border ${isCorrect ? 'border-green-200' : (userAnswer && userAnswer.selectedOption !== null ? 'border-red-200' : 'border-yellow-200')}`;
+                questionReviewDiv.innerHTML = `
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Soal ${index + 1}:</h3>
+                    <div class="text-md text-gray-800 mb-3 leading-relaxed">${parseMarkdown(question.question)}</div>
+                    <ul class="list-disc ml-5 mb-3 text-gray-700">
+                        ${question.options.map((option, optIndex) => `
+                            <li class="${optIndex === question.correctAnswerIndex ? 'font-bold text-green-700' : ''} ${userAnswer && optIndex === userAnswer.selectedOption && optIndex !== question.correctAnswerIndex ? 'line-through text-red-600' : ''}">
+                                ${option}
+                                ${optIndex === question.correctAnswerIndex ? '<span class="text-green-600 font-semibold"> (Jawaban Benar)</span>' : ''}
+                                ${userAnswer && optIndex === userAnswer.selectedOption && optIndex !== question.correctAnswerIndex ? '<span class="text-red-600 font-semibold"> (Jawaban Anda)</span>' : ''}
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <p class="mb-2"><strong>Jawaban Anda:</strong> <span class="${userAnswer && userAnswer.selectedOption !== null && userAnswer.isCorrect ? 'text-green-600' : (userAnswer && userAnswer.selectedOption !== null ? 'text-red-600' : 'text-gray-500')}">${selectedOptionText}</span></p>
+                    <p class="mb-2"><strong>Jawaban Benar:</strong> <span class="text-green-600">${correctAnswerText}</span></p>
+                    <p class="text-sm text-gray-700"><strong>Pembahasan:</strong> ${question.explanation}</p>
+                `;
+                reviewContainer.appendChild(questionReviewDiv);
+            });
+        }
+
+        // --- Local Storage Functions ---
+
+        /**
+         * Saves current quiz state to localStorage.
+         * @param {string} subject - The subject of the quiz (e.g., 'ekonomi').
+         */
+        function saveQuizState(subject) {
+            const quizState = {
+                currentQuestionIndex: currentQuestionIndex,
+                userAnswers: userAnswers,
+                correctCount: correctCount,
+                incorrectCount: incorrectCount,
+                skippedCount: skippedCount,
+                currentQuizSubject: subject // Ensure subject is stored
+            };
+            localStorage.setItem(`quizAppState_${subject}`, JSON.stringify(quizState));
+        }
+
+        /**
+         * Loads quiz state from localStorage for a specific subject.
+         * @param {string} subject - The subject of the quiz to load.
+         * @returns {object|null} The loaded quiz state, or null if not found.
+         */
+        function loadQuizState(subject) {
+            const storedState = localStorage.getItem(`quizAppState_${subject}`);
+            if (storedState) {
+                return JSON.parse(storedState);
+            }
+            return null;
+        }
+
+        /**
+         * Clears quiz state from localStorage for a specific subject.
+         * @param {string} subject - The subject of the quiz to clear.
+         */
+        function clearQuizState(subject) {
+            localStorage.removeItem(`quizAppState_${subject}`);
+        }
+
+
+        // --- Utility Functions ---
+
+        /**
+         * Function to parse a limited set of Markdown for content.
+         * Handles bold, italic, headings, unordered lists (* or -), ordered lists (1.), and paragraphs.
+         * Ensures no stray '*' appear from formatting.
+         * @param {string} text - The markdown text to parse.
+         * @returns {string} HTML string.
+         */
+        function parseMarkdown(text) {
+            let html = text;
+
+            // Handle inline bold and italic first, as they can be within paragraphs or list items
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italic
+
+            // Split text into blocks based on two or more newlines (paragraph separator)
+            const blocks = html.split(/\n\s*\n/);
+            let resultHtml = [];
+
+            blocks.forEach(block => {
+                // Trim the block and split by single newline for processing lines within a block
+                let lines = block.trim().split('\n');
+
+                // Skip empty blocks
+                if (lines.length === 0 || lines[0].trim() === '') {
+                    return;
+                }
+
+                // Check for headings
+                if (lines[0].startsWith('#### ')) {
+                    resultHtml.push(`<h4>${lines[0].substring(5).trim()}</h4>`);
+                } else if (lines[0].startsWith('### ')) {
+                    resultHtml.push(`<h3>${lines[0].substring(4).trim()}</h3>`);
+                } else if (lines[0].startsWith('## ')) {
+                    resultHtml.push(`<h2>${lines[0].substring(3).trim()}</h2>`);
+                } else if (lines[0].startsWith('# ')) {
+                    resultHtml.push(`<h1>${lines[0].substring(2).trim()}</h1>`);
+                }
+                // Check for lists
+                else if (lines[0].match(/^[*-]\s/) || lines[0].match(/^\d+\.\s/)) {
+                    let isOrderedList = lines[0].match(/^\d+\.\s/);
+                    let listTag = isOrderedList ? 'ol' : 'ul';
+                    let listItemsHtml = '';
+
+                    lines.forEach(line => {
+                        let listItemContent = line.replace(/^[*-]\s/, '').replace(/^\d+\.\s/, '').trim();
+                        // Re-apply bold/italic inside list items after removing list markers
+                        listItemContent = listItemContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        listItemContent = listItemContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                        listItemsHtml += `<li>${listItemContent}</li>`;
+                    });
+                    resultHtml.push(`<${listTag}>${listItemsHtml}</${listTag}>`);
+                }
+                // Check for pre-formatted blocks (like tables) - simple heuristic
+                else if (block.includes('|') && block.trim().startsWith('|')) {
+                     resultHtml.push(`<pre class="bg-gray-100 p-2 rounded-md text-sm overflow-x-auto">${block}</pre>`);
+                }
+                // Otherwise, it's a regular paragraph
+                else {
+                    // Re-apply bold/italic inside paragraphs after parsing block structure
+                    let paragraphContent = lines.join('<br>'); // Join lines with <br> for soft breaks within a paragraph
+                    paragraphContent = paragraphContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    paragraphContent = paragraphContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                    resultHtml.push(`<p>${paragraphContent}</p>`);
+                }
+            });
+
+            return resultHtml.join('');
+        }
+
+
+        // --- Event Listeners and Initial Load ---
+        window.onload = () => {
+            initializeQuiz();
+
+            // Quiz buttons
+            nextButton.addEventListener('click', nextQuestion);
+            prevButton.addEventListener('click', prevQuestion); // New
+            reviewButton.addEventListener('click', reviewQuiz);
+
+            // Restart button on result screen
+            if (restartButtonLink) {
+                restartButtonLink.addEventListener('click', () => {
+                    clearQuizState(currentQuizSubject); // Clear state when restarting from result screen
+                });
+            }
+
+            // Back to home from review screen
+            if (reviewBackToHomeLink) {
+                reviewBackToHomeLink.addEventListener('click', () => {
+                    clearQuizState(currentQuizSubject); // Clear state when returning from review to home
+                });
+            }
+        };
+    </script>
+</body>
+</html>

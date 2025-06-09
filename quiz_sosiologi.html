@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Sosiologi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrolling on results */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #app-container {
+            background-color: #ffffff;
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            max-width: 1000px; /* Increased max width */
+            width: 100%;
+            margin-top: 20px;
+        }
+        .option-button {
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left; /* Ensure text aligns left */
+            min-height: 48px; /* Ensure sufficient tap target size for mobile */
+        }
+        .option-button:hover:not(.selected):not(.correct):not(.incorrect) {
+            background-color: #e2e8f0; /* bg-blue-100 equivalent */
+        }
+        .option-button.selected {
+            border-color: #3b82f6; /* ring-blue-500 equivalent */
+            background-color: #bfdbfe; /* bg-blue-200 equivalent */
+        }
+        .option-button.correct {
+            background-color: #d1fae5; /* bg-green-100 equivalent */
+            border-color: #10b981; /* ring-green-500 equivalent */
+        }
+        .option-button.incorrect {
+            background-color: #fee2e2; /* bg-red-100 equivalent */
+            border-color: #ef4444; /* ring-red-500 equivalent */
+        }
+        .feedback-icon {
+            font-size: 1.5rem;
+            margin-left: 10px;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+        .feedback-text {
+            color: #4a5568; /* text-gray-700 */
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .correct-text {
+            color: #10b981; /* green-500 */
+        }
+        .incorrect-text {
+            color: #ef4444; /* red-500 */
+        }
+        /* Markdown rendering adjustments for material content (used in review) */
+        .material-content h1, .material-content h2, .material-content h3, .material-content h4 {
+            font-weight: bold;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+        }
+        .material-content h1 { font-size: 2.25rem; } /* text-4xl */
+        .material-content h2 { font-size: 1.875rem; } /* text-3xl */
+        .material-content h3 { font-size: 1.5rem; } /* text-2xl */
+        .material-content h4 { font-size: 1.25rem; } /* text-xl */
+
+        .material-content p {
+            margin-bottom: 1em;
+            line-height: 1.7;
+        }
+        .material-content ul {
+            list-style-type: disc;
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+        .material-content ol {
+            list-style-type: decimal;
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+        .material-content li {
+            margin-bottom: 0.5em;
+        }
+        .material-content strong {
+            font-weight: bold;
+        }
+        .material-content em {
+            font-style: italic;
+        }
+        .material-content pre {
+            background-color: #f7fafc; /* gray-50 */
+            border: 1px solid #e2e8f0; /* gray-200 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1em;
+            overflow-x: auto; /* For long lines in code/pre blocks */
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            #app-container {
+                padding: 1.5rem;
+            }
+            .option-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+            .feedback-icon {
+                font-size: 1.25rem;
+            }
+            .feedback-text {
+                font-size: 0.85rem;
+            }
+            #result-screen .grid {
+                grid-template-columns: 1fr; /* Stack scores vertically on small screens */
+            }
+        }
+    </style>
+</head>
+<body class="selection:bg-blue-300 selection:text-white">
+    <div id="app-container" class="relative">
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="flex flex-col p-8">
+            <div class="flex justify-between items-center mb-4">
+                <a href="index.html" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H16a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Beranda
+                </a>
+                <button id="prev-button" class="text-gray-600 hover:text-gray-800 font-semibold flex items-center mr-auto ml-4" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-180 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H16a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Sebelumnya
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-2"><span id="question-counter"></span></p>
+                <div id="question-text" class="text-xl font-medium text-gray-800 mb-6 leading-relaxed"></div>
+            </div>
+
+            <div id="options-container" class="flex flex-col gap-4 mb-6">
+                <!-- Options will be loaded here by JavaScript -->
+            </div>
+
+            <div id="feedback-area" class="min-h-[100px] bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 text-gray-700 transition-all duration-300 ease-in-out">
+                <!-- Feedback and explanation will be shown here -->
+            </div>
+
+            <button id="next-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-end w-full md:w-auto opacity-50 cursor-not-allowed" disabled>
+                Lanjut
+            </button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden flex-col items-center justify-center p-8 text-center">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-6">Hasil Kuis Anda!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left w-full max-w-md mb-8">
+                <div class="bg-green-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-green-600 font-bold" id="correct-score">0</span>
+                    <span class="text-lg text-green-800">Benar</span>
+                </div>
+                <div class="bg-red-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-red-600 font-bold" id="incorrect-score">0</span>
+                    <span class="text-lg text-red-800">Salah</span>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded-lg flex flex-col items-center">
+                    <span class="text-5xl text-yellow-600 font-bold" id="skipped-score">0</span>
+                    <span class="text-lg text-yellow-800">Dikosongi</span>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-4 w-full max-w-md justify-center">
+                <button id="review-button" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto">
+                    Tinjau Jawaban
+                </button>
+                <button id="go-to-material-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out w-full md:w-auto">
+                    Menuju Materi
+                </button>
+                <a href="index.html" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out w-full md:w-auto text-center">
+                    Mulai Ulang Kuis
+                </a>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="review-screen" class="hidden flex-col p-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-6 text-center">Tinjauan Kuis</h2>
+            <div id="review-container" class="flex flex-col gap-8">
+                <!-- Reviewed questions will be loaded here -->
+            </div>
+            <a href="index.html" class="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out self-center w-full md:w-auto text-center">
+                Kembali ke Beranda
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // Data Soal Sosiologi (hanya data sosiologi di sini)
+        const questions = [
+            {
+                question: "Identitas sebagai objek kajian sosiologi merujuk pada...",
+                options: ["Ciri-ciri fisik individu yang bersifat genetik.", "Kumpulan minat pribadi yang dimiliki seseorang.", "Konsep diri individu yang terbentuk melalui interaksi sosial.", "Warisan budaya yang diwariskan dari nenek moyang.", "Bakat dan potensi alami yang dimiliki sejak lahir."],
+                correctAnswerIndex: 2,
+                explanation: "Dalam sosiologi, identitas adalah konsep diri yang dibangun dan dipelihara melalui interaksi dengan orang lain dan kelompok sosial."
+            },
+            {
+                question: "Proses terbentuknya identitas personal dalam diri individu paling utama dipengaruhi oleh...",
+                options: ["Faktor genetik dan keturunan.", "Lingkungan alam tempat tinggal.", "Interaksi sosial dengan individu lain dan kelompok.", "Kekuatan spiritual dan keagamaan.", "Keberuntungan dan kesempatan yang datang."],
+                correctAnswerIndex: 2,
+                explanation: "Interaksi sosial adalah fondasi utama pembentukan identitas personal, di mana individu belajar nilai, norma, dan peran dari lingkungannya."
+            },
+            {
+                question: "Perhatikan tabel berikut:\n| No. | Contoh Identitas Sosial |\n|-----|-------------------------|\n| 1   | Anggota klub motor      |\n| 2   | Seorang dokter          |\n| 3   | Siswa SMAN 1            |\n| 4   | Penggemar musik K-Pop   |\n| 5   | Penduduk asli Jawa      |\nYang termasuk contoh identitas sosial ditunjukkan oleh nomor...",
+                options: ["1, 2, dan 3", "1, 3, dan 4", "2, 4, dan 5", "1, 2, 3, dan 4", "1, 2, 3, 4, dan 5"],
+                correctAnswerIndex: 4, // All of them are examples of social identity
+                explanation: "Semua contoh di atas (anggota klub, profesi, status pelajar, penggemar, dan asal daerah) adalah bentuk-bentuk identitas sosial karena merujuk pada keanggotaan atau peran dalam suatu kelompok atau masyarakat."
+            },
+            {
+                question: "Kedudukan manusia sebagai makhluk sosial menunjukkan bahwa manusia...",
+                options: ["Mampu hidup sendiri tanpa bantuan orang lain.", "Selalu ingin bersaing dengan sesamanya.", "Membutuhkan interaksi dan kerjasama dengan orang lain.", "Lebih mengutamakan kepentingan pribadi.", "Dapat mencapai kebahagiaan tanpa hubungan sosial."],
+                correctAnswerIndex: 2,
+                explanation: "Sebagai makhluk sosial, manusia tidak dapat hidup sendiri dan selalu membutuhkan interaksi, komunikasi, serta kerjasama dengan individu lain."
+            },
+            {
+                question: "Salah satu faktor utama pembentukan identitas adalah...",
+                options: ["Bentuk fisik dan penampilan.", "Lingkungan geografis tempat tinggal.", "Pengalaman hidup dan interaksi sosial.", "Warna kulit dan ras.", "Kekayaan materi yang dimiliki."],
+                correctAnswerIndex: 2,
+                explanation: "Identitas dibentuk melalui pengalaman hidup dan terutama melalui interaksi sosial yang terus-menerus dengan lingkungan sekitar."
+            },
+            {
+                question: "Ani selalu tampil rapi dan tertib karena terbiasa melihat orang tuanya yang disiplin. Contoh ini menunjukkan identitas individu terbentuk berdasarkan faktor...",
+                options: ["Biologis", "Psikologis", "Sosial", "Budaya", "Geografis"],
+                correctAnswerIndex: 2,
+                explanation: "Contoh ini menunjukkan pengaruh faktor sosial (keluarga/orang tua) dalam pembentukan identitas dan perilaku individu."
+            },
+            {
+                question: "Contoh kelompok sosial berdasarkan kesamaan daerah adalah...",
+                options: ["Kelompok pecinta alam", "Fans klub sepak bola", "Ikatan Mahasiswa Papua di Yogyakarta", "Komunitas gamers online", "Perkumpulan pedagang pasar"],
+                correctAnswerIndex: 2,
+                explanation: "Ikatan Mahasiswa Papua di Yogyakarta adalah kelompok sosial yang terbentuk berdasarkan kesamaan asal daerah."
+            },
+            {
+                question: "Pengaruh sosial terhadap peran individu dapat terlihat ketika...",
+                options: ["Seseorang memilih hobi berdasarkan minat pribadi.", "Individu menyesuaikan perilakunya dengan harapan kelompok.", "Seseorang mengembangkan bakat alami yang dimilikinya.", "Individu mengabaikan norma-norma yang berlaku.", "Seseorang mencapai tujuan tanpa campur tangan orang lain."],
+                correctAnswerIndex: 1,
+                explanation: "Pengaruh sosial seringkali menyebabkan individu untuk menyesuaikan perilaku, pikiran, atau perasaannya agar sesuai dengan harapan atau norma kelompok."
+            },
+            {
+                question: "Cara memperoleh status sosial individu melalui usaha dan kerja keras disebut...",
+                options: ["Ascribed status", "Achieved status", "Assigned status", "Inherited status", "Acquired status"],
+                correctAnswerIndex: 1,
+                explanation: "Achieved status adalah status yang diperoleh seseorang melalui usaha, kerja keras, dan prestasi yang dicapai."
+            },
+            {
+                question: "Seorang anak buruh pabrik berhasil menjadi seorang profesor di universitas ternama setelah menempuh pendidikan yang tinggi. Cara memperoleh status ini termasuk...",
+                options: ["Ascribed status", "Achieved status", "Assigned status", "Inherited status", "Acquired status"],
+                correctAnswerIndex: 1,
+                explanation: "Status profesor diperoleh melalui pendidikan dan usaha, sehingga termasuk achieved status."
+            },
+            {
+                question: "Faktor yang memengaruhi hancurnya gejala sosial adalah...",
+                options: ["Kurangnya interaksi sosial antarindividu.", "Ketidakmampuan masyarakat beradaptasi dengan perubahan.", "Adanya nilai dan norma yang kuat dalam masyarakat.", "Tingginya tingkat kesadaran hukum masyarakat.", "Stabilnya kondisi ekonomi masyarakat."],
+                correctAnswerIndex: 1,
+                explanation: "Ketidakmampuan masyarakat beradaptasi dengan perubahan dapat menyebabkan munculnya atau memburuknya gejala sosial negatif, seperti disorganisasi."
+            },
+            {
+                question: "Contoh gejala sosial berdasarkan pernyataan adalah...",
+                options: ["Terjadinya hujan deras yang menyebabkan banjir.", "Gempa bumi yang menghancurkan bangunan.", "Meningkatnya angka kriminalitas di perkotaan.", "Erupsi gunung berapi.", "Perubahan iklim global."],
+                correctAnswerIndex: 2,
+                explanation: "Meningkatnya angka kriminalitas adalah fenomena sosial yang disebabkan oleh interaksi dan struktur sosial, berbeda dengan fenomena alam."
+            },
+            {
+                question: "Gejala sosial yang ditandai dengan adanya kesenjangan ekonomi yang mencolok antara kelompok kaya dan miskin dalam masyarakat disebut...",
+                options: ["Modernisasi", "Globalisasi", "Ketimpangan sosial", "Urbanisasi", "Disorganisasi sosial"],
+                correctAnswerIndex: 2,
+                explanation: "Kesenjangan ekonomi yang mencolok antara kelompok kaya dan miskin adalah bentuk dari ketimpangan sosial."
+            },
+            {
+                question: "Upaya yang dapat dilakukan dalam mengatasi gejala sosial akibat perubahan adalah...",
+                options: ["Menolak semua bentuk perubahan sosial.", "Mengabaikan dampak negatif dari perubahan.", "Meningkatkan kesadaran masyarakat akan pentingnya adaptasi dan edukasi.", "Membatasi interaksi dengan budaya luar.", "Mengisolasi diri dari perkembangan teknologi."],
+                correctAnswerIndex: 2,
+                explanation: "Meningkatkan kesadaran dan edukasi adalah kunci agar masyarakat dapat beradaptasi secara positif terhadap perubahan sosial dan mengatasi gejala negatifnya."
+            },
+            {
+                question: "Identifikasi upaya dalam menjauhi pengaruh gejala sosial negatif adalah...",
+                options: ["Mengikuti semua tren yang ada di masyarakat.", "Memperkuat nilai-nilai agama dan moral pribadi.", "Lebih banyak menghabiskan waktu di media sosial.", "Menjauhkan diri dari pergaulan yang positif.", "Bersikap individualistis dan tidak peduli lingkungan."],
+                correctAnswerIndex: 1,
+                explanation: "Memperkuat nilai-nilai agama dan moral pribadi dapat menjadi benteng untuk menjauhi pengaruh gejala sosial negatif."
+            },
+            {
+                question: "Langkah preventif yang tepat dalam mengatasi gejala sosial pengangguran adalah...",
+                options: ["Meningkatkan jumlah angkatan kerja tanpa pelatihan.", "Memberikan bantuan sosial tanpa syarat.", "Mengembangkan pendidikan kejuruan dan kewirausahaan.", "Membatasi lapangan kerja bagi lulusan baru.", "Mengurangi investasi pada sektor industri."],
+                correctAnswerIndex: 2,
+                explanation: "Pendidikan kejuruan dan kewirausahaan membekali individu dengan keterampilan yang relevan dan kemampuan menciptakan lapangan kerja, sehingga mengurangi pengangguran."
+            },
+            {
+                question: "Lembaga sosial adalah...",
+                options: ["Sekelompok individu yang memiliki kesamaan hobi.", "Organisasi formal yang didirikan pemerintah.", "Suatu sistem norma dan aturan yang mengatur perilaku anggota masyarakat.", "Tempat berkumpulnya para pemimpin komunitas.", "Bangunan fisik tempat kegiatan sosial."],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga sosial adalah pola perilaku yang mapan, terorganisir, dan melibatkan norma-norma untuk memenuhi kebutuhan dasar masyarakat."
+            },
+            {
+                question: "Ciri-ciri lembaga sosial berdasarkan simbol atau ciri khasnya dapat dilihat dari...",
+                options: ["Struktur organisasi yang tidak jelas.", "Adanya lambang, bendera, atau ritual tertentu.", "Jumlah anggotanya yang sangat banyak.", "Lokasi fisiknya yang terpencil.", "Tidak adanya tujuan yang jelas."],
+                correctAnswerIndex: 1,
+                explanation: "Lembaga sosial seringkali memiliki simbol, lambang, atau ritual yang menjadi ciri khas dan membedakannya dari lembaga lain."
+            },
+            {
+                question: "'Peraturan lalu lintas yang mengatur pengendara di jalan raya' merupakan ciri lembaga sosial berdasarkan pernyataan bahwa lembaga sosial memiliki...",
+                options: ["Usia yang sangat tua.", "Alat-alat perlengkapan.", "Norma-norma yang jelas dan tertulis.", "Ideologi atau cita-cita.", "Tujuan yang tidak dapat diubah."],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga sosial dicirikan oleh adanya seperangkat norma dan aturan yang mengatur perilaku anggotanya."
+            },
+            {
+                question: "Fungsi manifest lembaga sosial adalah...",
+                options: ["Fungsi yang tidak disadari dan tidak direncanakan.", "Fungsi yang tersembunyi dan tidak tampak.", "Fungsi utama yang disadari dan dikehendaki oleh anggota masyarakat.", "Fungsi yang hanya bermanfaat bagi sebagian kecil anggota masyarakat.", "Fungsi yang muncul secara tidak sengaja."],
+                correctAnswerIndex: 2,
+                explanation: "Fungsi manifest adalah fungsi yang jelas, disadari, dan menjadi tujuan utama pembentukan lembaga sosial."
+            },
+            {
+                question: "Lembaga sosial yang berfungsi mengatur hubungan antar individu dalam memenuhi kebutuhan ekonomi adalah...",
+                options: ["Lembaga Keluarga", "Lembaga Pendidikan", "Lembaga Ekonomi", "Lembaga Agama", "Lembaga Politik"],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga ekonomi mengatur produksi, distribusi, dan konsumsi barang dan jasa dalam masyarakat."
+            },
+            {
+                question: "Lembaga sosial yang berperan dalam pewarisan nilai dan norma serta sosialisasi awal individu adalah...",
+                options: ["Lembaga Ekonomi", "Lembaga Politik", "Lembaga Agama", "Lembaga Keluarga", "Lembaga Pendidikan"],
+                correctAnswerIndex: 3,
+                explanation: "Lembaga keluarga adalah agen sosialisasi primer yang pertama kali menanamkan nilai dan norma pada individu."
+            },
+            {
+                question: "Lembaga sosial yang berfungsi untuk mengatur dan mengawasi jalannya pemerintahan serta distribusi kekuasaan adalah...",
+                options: ["Lembaga Ekonomi", "Lembaga Pendidikan", "Lembaga Keluarga", "Lembaga Politik", "Lembaga Hukum"],
+                correctAnswerIndex: 3,
+                explanation: "Lembaga politik berfokus pada pengaturan kekuasaan, pemerintahan, dan pengambilan keputusan di masyarakat."
+            },
+            {
+                question: "Stratifikasi sosial adalah...",
+                options: ["Pengelompokan individu berdasarkan hobi.", "Pembedaan posisi individu atau kelompok secara vertikal dalam masyarakat.", "Pemisahan masyarakat berdasarkan jenis kelamin.", "Pembentukan kelompok sosial berdasarkan kesamaan daerah.", "Penyatuan semua anggota masyarakat dalam satu tingkatan."],
+                correctAnswerIndex: 1,
+                explanation: "Stratifikasi sosial adalah pengelompokan anggota masyarakat berdasarkan status sosialnya secara bertingkat (hierarki)."
+            },
+            {
+                question: "Ciri utama dari stratifikasi sosial terbuka adalah...",
+                options: ["Mobilitas sosial sangat terbatas.", "Kedudukan individu ditentukan sejak lahir.", "Seseorang dapat berpindah strata sosial.", "Adanya kasta yang bersifat permanen.", "Masyarakat dibagi menjadi kelas-kelas yang kaku."],
+                correctAnswerIndex: 2,
+                explanation: "Dalam stratifikasi sosial terbuka, individu memiliki kesempatan untuk berpindah dari satu strata ke strata lain melalui usaha, pendidikan, atau prestasi."
+            },
+            {
+                question: "Dalam sistem stratifikasi sosial kasta, seseorang yang lahir sebagai Brahmana akan selalu menjadi Brahmana. Ini menunjukkan sifat stratifikasi sosial yang...",
+                options: ["Terbuka", "Tertutup", "Campuran", "Fleksibel", "Dinamis"],
+                correctAnswerIndex: 1,
+                explanation: "Stratifikasi tertutup adalah sistem di mana mobilitas sosial sangat sulit atau tidak mungkin terjadi, seperti dalam sistem kasta."
+            },
+            {
+                question: "Contoh stratifikasi sosial adalah...",
+                options: ["Perbedaan jenis pekerjaan antara petani dan nelayan.", "Pengelompokan siswa berdasarkan minat belajar.", "Pembagian masyarakat menjadi kelas atas, menengah, dan bawah.", "Pembentukan klub motor di suatu kota.", "Perbedaan hobi antara bermain musik dan membaca buku."],
+                correctAnswerIndex: 2,
+                explanation: "Pembagian masyarakat menjadi kelas atas, menengah, dan bawah adalah contoh paling jelas dari stratifikasi sosial berdasarkan ekonomi atau kekayaan."
+            },
+            {
+                question: "Dasar stratifikasi sosial yang paling umum di masyarakat modern adalah...",
+                options: ["Keturunan", "Kekuasaan", "Pendidikan", "Harta/kekayaan", "Jenis kelamin"],
+                correctAnswerIndex: 3,
+                explanation: "Di masyarakat modern, harta/kekayaan sering menjadi dasar utama dalam menentukan posisi seseorang dalam stratifikasi sosial."
+            },
+            {
+                question: "Sifat stratifikasi sosial yang menggambarkan masyarakat yang masih sangat terikat pada sistem feodal atau kasta adalah...",
+                options: ["Terbuka", "Tertutup", "Dinamis", "Fleksibel", "Campuran"],
+                correctAnswerIndex: 1,
+                explanation: "Sistem feodal atau kasta adalah contoh stratifikasi sosial tertutup, di mana posisi sosial ditentukan oleh kelahiran dan sulit diubah."
+            },
+            {
+                question: "Dampak negatif dari stratifikasi sosial yang ekstrem adalah...",
+                options: ["Mendorong persaingan yang sehat.", "Menciptakan kesenjangan sosial dan konflik.", "Meningkatkan solidaritas antar kelompok.", "Mempercepat mobilitas sosial.", "Mengurangi tingkat kemiskinan."],
+                correctAnswerIndex: 1,
+                explanation: "Stratifikasi sosial yang ekstrem dapat memicu kesenjangan yang lebar dan berpotensi menimbulkan konflik antar kelas sosial."
+            },
+            {
+                question: "Konsep mobilitas sosial adalah...",
+                options: ["Perubahan posisi individu atau kelompok dalam struktur sosial.", "Perpindahan geografis individu dari satu tempat ke tempat lain.", "Perubahan selera dan gaya hidup individu.", "Perkembangan teknologi dalam masyarakat.", "Pembentukan kelompok sosial baru."],
+                correctAnswerIndex: 0,
+                explanation: "Mobilitas sosial adalah perpindahan individu atau kelompok dari satu lapisan sosial ke lapisan sosial lainnya."
+            },
+            {
+                question: "Contoh mobilitas sosial vertikal naik adalah...",
+                options: ["Seorang karyawan dipindahkan ke divisi lain dengan jabatan yang sama.", "Anak seorang petani berhasil menjadi seorang direktur perusahaan.", "Seseorang beralih pekerjaan dari guru menjadi dosen.", "Sebuah keluarga pindah rumah dari desa ke kota.", "Seorang mahasiswa lulus kuliah dan bekerja di bidang yang sama dengan orang tuanya."],
+                correctAnswerIndex: 1,
+                explanation: "Perpindahan dari status sosial rendah (anak petani) ke status sosial tinggi (direktur perusahaan) adalah contoh mobilitas vertikal naik."
+            },
+            {
+                question: "Seorang anak dari keluarga kurang mampu berhasil masuk perguruan tinggi negeri favorit melalui jalur beasiswa. Saluran mobilitas sosial yang paling menonjol dalam ilustrasi ini adalah...",
+                options: ["Organisasi politik", "Organisasi ekonomi", "Lembaga pendidikan", "Organisasi profesi", "Lembaga keagamaan"],
+                correctAnswerIndex: 2,
+                explanation: "Lembaga pendidikan seringkali menjadi saluran utama mobilitas sosial karena memberikan kesempatan untuk meningkatkan pengetahuan dan keterampilan."
+            },
+            {
+                question: "Salah satu dampak negatif mobilitas sosial adalah...",
+                options: ["Meningkatnya integrasi sosial.", "Terjadinya disorganisasi sosial dan konflik antarkelas.", "Mendorong peningkatan kualitas hidup.", "Memperkuat solidaritas kelompok.", "Memperluas jaringan sosial individu."],
+                correctAnswerIndex: 1,
+                explanation: "Meskipun mobilitas sosial memiliki dampak positif, terkadang juga dapat menyebabkan disorganisasi dan konflik jika perubahan status menimbulkan ketegangan antarindividu atau kelompok."
+            },
+            {
+                question: "Permasalahan sosial adalah...",
+                options: ["Segala sesuatu yang menjadi masalah pribadi individu.", "Kondisi yang tidak diinginkan dan dianggap membahayakan masyarakat.", "Peristiwa alam yang tidak dapat dihindari.", "Konflik antarnegara.", "Perubahan budaya yang terjadi secara perlahan."],
+                correctAnswerIndex: 1,
+                explanation: "Permasalahan sosial adalah kondisi yang memengaruhi sejumlah besar individu dalam masyarakat dan dianggap sebagai ancaman terhadap nilai-nilai sosial."
+            },
+            {
+                question: "Memahami konsep etnosentrisme sebagai permasalahan sosial berarti menyadari bahwa etnosentrisme dapat...",
+                options: ["Memperkuat rasa kebangsaan.", "Memicu konflik dan diskriminasi antarkelompok.", "Meningkatkan toleransi antarbudaya.", "Memperkaya khazanah budaya.", "Mengurangi kesenjangan sosial."],
+                correctAnswerIndex: 1,
+                explanation: "Etnosentrisme, yaitu kecenderungan menganggap budaya sendiri paling benar dan merendahkan budaya lain, dapat memicu prasangka, stereotip, diskriminasi."
+            },
+            {
+                question: "Contoh etnosentrisme sebagai permasalahan sosial adalah...",
+                options: ["Seseorang bangga akan kebudayaan daerahnya sendiri.", "Kelompok A menganggap budayanya paling unggul dan merendahkan budaya kelompok B.", "Terjadinya pertukaran budaya antarnegara.", "Perayaan hari raya keagamaan bersama.", "Kolaborasi seni dari berbagai daerah."],
+                correctAnswerIndex: 1,
+                explanation: "Contoh ini jelas menunjukkan sikap menganggap budaya sendiri superior dan merendahkan budaya lain, yang merupakan inti dari etnosentrisme negatif."
+            },
+            {
+                question: "Upaya yang dapat dilakukan untuk mencegah permasalahan sosial adalah...",
+                options: ["Meningkatkan individualisme di masyarakat.", "Mengabaikan keberagaman budaya.", "Memperkuat nilai-nilai toleransi dan pluralisme.", "Membatasi interaksi antar kelompok yang berbeda.", "Menghilangkan perbedaan sosial."],
+                correctAnswerIndex: 2,
+                explanation: "Memperkuat nilai-nilai toleransi dan pluralisme membantu masyarakat menerima perbedaan dan mengurangi potensi konflik sosial."
+            },
+            {
+                question: "Upaya yang tepat untuk meningkatkan kerukunan masyarakat adalah...",
+                options: ["Menciptakan persaingan antarkelompok.", "Mengadakan dialog antarumat beragama dan antarkelompok.", "Menekankan perbedaan suku dan agama.", "Mengisolasi kelompok minoritas.", "Menutup diri dari pengaruh luar."],
+                correctAnswerIndex: 1,
+                explanation: "Dialog dan komunikasi terbuka antarumat beragama dan antarkelompok adalah cara efektif untuk membangun pemahaman dan kerukunan."
+            },
+            {
+                question: "Sikap yang tepat dalam menyikapi keragaman dalam masyarakat adalah...",
+                options: ["Bersikap fanatik terhadap kelompok sendiri.", "Menganggap kelompok lain lebih rendah.", "Mengembangkan sikap toleransi dan saling menghormati.", "Menghindari interaksi dengan kelompok yang berbeda.", "Memaksakan pandangan sendiri kepada orang lain."],
+                correctAnswerIndex: 2,
+                explanation: "Toleransi dan saling menghormati adalah kunci untuk menjaga keharmonisan di tengah keragaman masyarakat."
+            }
+        ];
+
+        // Global variables for quiz state
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Stores { questionIndex: index, selectedOption: optionIndex, isCorrect: boolean }
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let skippedCount = 0;
+        let isAnswerSelected = false; // To prevent multiple selections for a single question
+        const currentQuizSubject = 'sosiologi'; // Fixed for this file
+
+        // Get DOM elements
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const reviewScreen = document.getElementById('review-screen');
+
+        const questionCounter = document.getElementById('question-counter');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const prevButton = document.getElementById('prev-button'); // New
+        const nextButton = document.getElementById('next-button');
+
+        const correctScoreSpan = document.getElementById('correct-score');
+        const incorrectScoreSpan = document.getElementById('incorrect-score');
+        const skippedScoreSpan = document.getElementById('skipped-score');
+        const reviewButton = document.getElementById('review-button');
+        const goToMaterialButton = document.getElementById('go-to-material-button');
+        // Restart button on result screen
+        const restartButtonLink = document.querySelector('#result-screen a'); // Link to index.html for restart
+        // Back to home from review screen
+        const reviewBackToHomeLink = document.querySelector('#review-screen a'); // Link to index.html from review
+
+        // --- Functions ---
+
+        /**
+         * Hides all main screens and displays the specified one.
+         * @param {string} screenId - The ID of the screen to show.
+         */
+        function showScreen(screenId) {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            reviewScreen.classList.add('hidden');
+
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.remove('hidden');
+                targetScreen.classList.add('flex'); // Ensure flex display for centering or layout
+            }
+        }
+
+        /**
+         * Initializes the quiz for this subject.
+         */
+        function initializeQuiz() {
+            const quizState = loadQuizState(currentQuizSubject);
+            if (quizState) {
+                currentQuestionIndex = quizState.currentQuestionIndex || 0;
+                userAnswers = quizState.userAnswers || [];
+                correctCount = quizState.correctCount || 0;
+                incorrectCount = quizState.incorrectCount || 0;
+                skippedCount = quizState.skippedCount || 0;
+                console.log('Resuming quiz for', currentQuizSubject, 'at question', currentQuestionIndex + 1);
+            } else {
+                clearQuizState(currentQuizSubject);
+                currentQuestionIndex = 0;
+                userAnswers = [];
+                correctCount = 0;
+                incorrectCount = 0;
+                skippedCount = 0;
+                console.log('Starting new quiz for', currentQuizSubject);
+            }
+
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        /**
+         * Loads and displays the current question.
+         */
+        function loadQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const question = questions[currentQuestionIndex];
+
+                questionCounter.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+                questionText.innerHTML = parseMarkdown(question.question);
+                optionsContainer.innerHTML = ''; // Clear previous options
+
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = `option-button bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg shadow-sm transition duration-200 w-full text-left ring-1 ring-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400`;
+                    button.onclick = () => handleAnswer(index);
+                    optionsContainer.appendChild(button);
+                });
+
+                feedbackArea.innerHTML = ''; // Clear feedback area
+                nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+                nextButton.disabled = true;
+                isAnswerSelected = false; // Allow new selection for this question
+
+                // Manage prev button state
+                if (currentQuestionIndex === 0) {
+                    prevButton.classList.add('opacity-50', 'cursor-not-allowed');
+                    prevButton.disabled = true;
+                } else {
+                    prevButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    prevButton.disabled = false;
+                }
+
+                // If loading from saved state, re-apply visual feedback for the current question if already answered
+                const savedAnswer = userAnswers[currentQuestionIndex];
+                if (savedAnswer && savedAnswer.selectedOption !== null) {
+                    isAnswerSelected = true; // Mark as answered
+                    nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    nextButton.disabled = false;
+                    applyFeedbackToOptions(savedAnswer.selectedOption, savedAnswer.isCorrect, question);
+                    feedbackArea.innerHTML = `
+                        <p class="font-semibold mb-2 ${savedAnswer.isCorrect ? 'correct-text' : 'incorrect-text'}">
+                            ${savedAnswer.isCorrect ? 'Jawaban Anda Benar!' : 'Jawaban Anda Salah.'}
+                        </p>
+                        <p class="feedback-text">
+                            <strong>Pembahasan:</strong> ${question.explanation}
+                        </p>
+                    `;
+                }
+
+            } else {
+                showResultScreen();
+            }
+        }
+
+        /**
+         * Applies visual feedback to option buttons.
+         * @param {number} selectedIndex - The index of the option chosen by the user.
+         * @param {boolean} isCorrect - Whether the selected answer was correct.
+         * @param {object} question - The current question object.
+         */
+        function applyFeedbackToOptions(selectedIndex, isCorrect, question) {
+            const optionButtons = optionsContainer.children;
+            Array.from(optionButtons).forEach((button, index) => {
+                button.disabled = true; // Disable all options
+                button.classList.remove('hover:bg-gray-200'); // Remove hover effect
+
+                if (index === selectedIndex) {
+                    button.classList.add('selected');
+                    if (isCorrect) {
+                        button.classList.add('correct');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                    } else {
+                        button.classList.add('incorrect');
+                        button.innerHTML = `${button.textContent} <span class="feedback-icon text-red-600">✖</span>`;
+                    }
+                }
+
+                // Always show the correct answer with a green highlight if it's different from selected
+                if (index === question.correctAnswerIndex && (index !== selectedIndex || isCorrect)) {
+                    button.classList.add('correct');
+                    button.innerHTML = `${button.textContent} <span class="feedback-icon text-green-600">✔</span>`;
+                }
+            });
+        }
+
+
+        /**
+         * Handles the user's answer selection.
+         * @param {number} selectedIndex - The index of the option chosen by the user.
+         */
+        function handleAnswer(selectedIndex) {
+            if (isAnswerSelected) return; // Prevent multiple clicks on options
+
+            isAnswerSelected = true;
+            const currentQuestion = questions[currentQuestionIndex];
+            const isCorrect = (selectedIndex === currentQuestion.correctAnswerIndex);
+
+            // Check if this question was already answered and if the answer changed
+            const previousAnswer = userAnswers[currentQuestionIndex];
+            if (previousAnswer && previousAnswer.selectedOption !== null) {
+                // If previously answered and now re-answered, adjust counts
+                if (previousAnswer.isCorrect && !isCorrect) {
+                    correctCount--;
+                    incorrectCount++;
+                } else if (!previousAnswer.isCorrect && isCorrect) {
+                    incorrectCount--;
+                    correctCount++;
+                }
+            } else if (previousAnswer && previousAnswer.selectedOption === null) {
+                // If previously skipped, but now answered
+                skippedCount--;
+                if (isCorrect) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            } else {
+                // First time answering this question
+                if (isCorrect) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            }
+
+            // Store the answer
+            userAnswers[currentQuestionIndex] = {
+                questionIndex: currentQuestionIndex,
+                selectedOption: selectedIndex,
+                isCorrect: isCorrect,
+                subject: currentQuizSubject
+            };
+
+            applyFeedbackToOptions(selectedIndex, isCorrect, currentQuestion);
+
+            // Show explanation
+            feedbackArea.innerHTML = `
+                <p class="font-semibold mb-2 ${isCorrect ? 'correct-text' : 'incorrect-text'}">
+                    ${isCorrect ? 'Jawaban Anda Benar!' : 'Jawaban Anda Salah.'}
+                </p>
+                <p class="feedback-text">
+                    <strong>Pembahasan:</strong> ${currentQuestion.explanation}
+                </p>
+            `;
+
+            nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            nextButton.disabled = false;
+            saveQuizState(currentQuizSubject); // Save state after each answer
+        }
+
+        /**
+         * Moves to the previous question.
+         */
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        /**
+         * Moves to the next question or finishes the quiz.
+         */
+        function nextQuestion() {
+            // If user did not select an answer before clicking next, it's skipped
+            if (!isAnswerSelected) {
+                const previousAnswer = userAnswers[currentQuestionIndex];
+                if (!previousAnswer || previousAnswer.selectedOption === null) {
+                    userAnswers[currentQuestionIndex] = {
+                        questionIndex: currentQuestionIndex,
+                        selectedOption: null, // Indicates skipped
+                        isCorrect: false, // Skipped is counted as incorrect for scoring purposes
+                        subject: currentQuizSubject
+                    };
+                    skippedCount++;
+                }
+            }
+            saveQuizState(currentQuizSubject); // Save state before moving to the next question
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        /**
+         * Displays the final result screen.
+         */
+        function showResultScreen() {
+            // Recalculate scores based on userAnswers to ensure accuracy after resuming from local storage
+            correctCount = userAnswers.filter(a => a.isCorrect).length;
+            incorrectCount = userAnswers.filter(a => a.selectedOption !== null && !a.isCorrect).length;
+            skippedCount = userAnswers.filter(a => a.selectedOption === null).length;
+
+            correctScoreSpan.textContent = correctCount;
+            incorrectScoreSpan.textContent = incorrectCount;
+            skippedScoreSpan.textContent = skippedCount;
+
+            // Set up the "Go to Material" button
+            goToMaterialButton.onclick = () => {
+                // Navigate to material.html, passing the subject and a flag that it came from quiz
+                window.location.href = `material.html?subject=${currentQuizSubject}&fromQuiz=true`;
+            };
+
+            showScreen('result-screen');
+            clearQuizState(currentQuizSubject); // Clear state after quiz is finished and results are shown
+        }
+
+        /**
+         * Displays all questions with user's answers, correct answers, and explanations.
+         */
+        function reviewQuiz() {
+            showScreen('review-screen');
+            reviewContainer.innerHTML = ''; // Clear previous review content
+
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const selectedOptionText = userAnswer && userAnswer.selectedOption !== null ? question.options[userAnswer.selectedOption] : 'Tidak dijawab';
+                const correctAnswerText = question.options[question.correctAnswerIndex];
+                const isCorrect = (userAnswer && userAnswer.isCorrect);
+
+                const questionReviewDiv = document.createElement('div');
+                questionReviewDiv.className = `p-5 rounded-lg shadow-md ${isCorrect ? 'bg-green-50' : (userAnswer && userAnswer.selectedOption !== null ? 'bg-red-50' : 'bg-yellow-50')} border ${isCorrect ? 'border-green-200' : (userAnswer && userAnswer.selectedOption !== null ? 'border-red-200' : 'border-yellow-200')}`;
+                questionReviewDiv.innerHTML = `
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Soal ${index + 1}:</h3>
+                    <div class="text-md text-gray-800 mb-3 leading-relaxed">${parseMarkdown(question.question)}</div>
+                    <ul class="list-disc ml-5 mb-3 text-gray-700">
+                        ${question.options.map((option, optIndex) => `
+                            <li class="${optIndex === question.correctAnswerIndex ? 'font-bold text-green-700' : ''} ${userAnswer && optIndex === userAnswer.selectedOption && optIndex !== question.correctAnswerIndex ? 'line-through text-red-600' : ''}">
+                                ${option}
+                                ${optIndex === question.correctAnswerIndex ? '<span class="text-green-600 font-semibold"> (Jawaban Benar)</span>' : ''}
+                                ${userAnswer && optIndex === userAnswer.selectedOption && optIndex !== question.correctAnswerIndex ? '<span class="text-red-600 font-semibold"> (Jawaban Anda)</span>' : ''}
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <p class="mb-2"><strong>Jawaban Anda:</strong> <span class="${userAnswer && userAnswer.selectedOption !== null && userAnswer.isCorrect ? 'text-green-600' : (userAnswer && userAnswer.selectedOption !== null ? 'text-red-600' : 'text-gray-500')}">${selectedOptionText}</span></p>
+                    <p class="mb-2"><strong>Jawaban Benar:</strong> <span class="text-green-600">${correctAnswerText}</span></p>
+                    <p class="text-sm text-gray-700"><strong>Pembahasan:</strong> ${question.explanation}</p>
+                `;
+                reviewContainer.appendChild(questionReviewDiv);
+            });
+        }
+
+        // --- Local Storage Functions ---
+
+        /**
+         * Saves current quiz state to localStorage.
+         * @param {string} subject - The subject of the quiz (e.g., 'sosiologi').
+         */
+        function saveQuizState(subject) {
+            const quizState = {
+                currentQuestionIndex: currentQuestionIndex,
+                userAnswers: userAnswers,
+                correctCount: correctCount,
+                incorrectCount: incorrectCount,
+                skippedCount: skippedCount,
+                currentQuizSubject: subject // Ensure subject is stored
+            };
+            localStorage.setItem(`quizAppState_${subject}`, JSON.stringify(quizState));
+        }
+
+        /**
+         * Loads quiz state from localStorage for a specific subject.
+         * @param {string} subject - The subject of the quiz to load.
+         * @returns {object|null} The loaded quiz state, or null if not found.
+         */
+        function loadQuizState(subject) {
+            const storedState = localStorage.getItem(`quizAppState_${subject}`);
+            if (storedState) {
+                return JSON.parse(storedState);
+            }
+            return null;
+        }
+
+        /**
+         * Clears quiz state from localStorage for a specific subject.
+         * @param {string} subject - The subject of the quiz to clear.
+         */
+        function clearQuizState(subject) {
+            localStorage.removeItem(`quizAppState_${subject}`);
+        }
+
+
+        // --- Utility Functions ---
+
+        /**
+         * Function to parse a limited set of Markdown for content.
+         * Handles bold, italic, headings, unordered lists (* or -), ordered lists (1.), and paragraphs.
+         * Ensures no stray '*' appear from formatting.
+         * @param {string} text - The markdown text to parse.
+         * @returns {string} HTML string.
+         */
+        function parseMarkdown(text) {
+            let html = text;
+
+            // Handle inline bold and italic first, as they can be within paragraphs or list items
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italic
+
+            // Split text into blocks based on two or more newlines (paragraph separator)
+            const blocks = html.split(/\n\s*\n/);
+            let resultHtml = [];
+
+            blocks.forEach(block => {
+                // Trim the block and split by single newline for processing lines within a block
+                let lines = block.trim().split('\n');
+
+                // Skip empty blocks
+                if (lines.length === 0 || lines[0].trim() === '') {
+                    return;
+                }
+
+                // Check for headings
+                if (lines[0].startsWith('#### ')) {
+                    resultHtml.push(`<h4>${lines[0].substring(5).trim()}</h4>`);
+                } else if (lines[0].startsWith('### ')) {
+                    resultHtml.push(`<h3>${lines[0].substring(4).trim()}</h3>`);
+                } else if (lines[0].startsWith('## ')) {
+                    resultHtml.push(`<h2>${lines[0].substring(3).trim()}</h2>`);
+                } else if (lines[0].startsWith('# ')) {
+                    resultHtml.push(`<h1>${lines[0].substring(2).trim()}</h1>`);
+                }
+                // Check for lists
+                else if (lines[0].match(/^[*-]\s/) || lines[0].match(/^\d+\.\s/)) {
+                    let isOrderedList = lines[0].match(/^\d+\.\s/);
+                    let listTag = isOrderedList ? 'ol' : 'ul';
+                    let listItemsHtml = '';
+
+                    lines.forEach(line => {
+                        let listItemContent = line.replace(/^[*-]\s/, '').replace(/^\d+\.\s/, '').trim();
+                        // Re-apply bold/italic inside list items after removing list markers
+                        listItemContent = listItemContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        listItemContent = listItemContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                        listItemsHtml += `<li>${listItemContent}</li>`;
+                    });
+                    resultHtml.push(`<${listTag}>${listItemsHtml}</${listTag}>`);
+                }
+                // Check for pre-formatted blocks (like tables) - simple heuristic
+                else if (block.includes('|') && block.trim().startsWith('|')) {
+                     resultHtml.push(`<pre class="bg-gray-100 p-2 rounded-md text-sm overflow-x-auto">${block}</pre>`);
+                }
+                // Otherwise, it's a regular paragraph
+                else {
+                    // Re-apply bold/italic inside paragraphs after parsing block structure
+                    let paragraphContent = lines.join('<br>'); // Join lines with <br> for soft breaks within a paragraph
+                    paragraphContent = paragraphContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    paragraphContent = paragraphContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                    resultHtml.push(`<p>${paragraphContent}</p>`);
+                }
+            });
+
+            return resultHtml.join('');
+        }
+
+
+        // --- Event Listeners and Initial Load ---
+        window.onload = () => {
+            initializeQuiz();
+
+            // Quiz buttons
+            nextButton.addEventListener('click', nextQuestion);
+            prevButton.addEventListener('click', prevQuestion); // New
+            reviewButton.addEventListener('click', reviewQuiz);
+
+            // Restart button on result screen
+            if (restartButtonLink) {
+                restartButtonLink.addEventListener('click', () => {
+                    clearQuizState(currentQuizSubject); // Clear state when restarting from result screen
+                });
+            }
+
+            // Back to home from review screen
+            if (reviewBackToHomeLink) {
+                reviewBackToHomeLink.addEventListener('click', () => {
+                    clearQuizState(currentQuizSubject); // Clear state when returning from review to home
+                });
+            }
+        };
+    </script>
+</body>
+</html>
