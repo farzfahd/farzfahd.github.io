@@ -214,246 +214,488 @@
     <script>
         // Data Soal Sosiologi (hanya data sosiologi di sini)
         const questions = [
-            {
-                question: "Identitas sebagai objek kajian sosiologi merujuk pada...",
-                options: ["Ciri-ciri fisik individu yang bersifat genetik.", "Kumpulan minat pribadi yang dimiliki seseorang.", "Konsep diri individu yang terbentuk melalui interaksi sosial.", "Warisan budaya yang diwariskan dari nenek moyang.", "Bakat dan potensi alami yang dimiliki sejak lahir."],
-                correctAnswerIndex: 2,
-                explanation: "Dalam sosiologi, identitas adalah konsep diri yang dibangun dan dipelihara melalui interaksi dengan orang lain dan kelompok sosial."
-            },
-            {
-                question: "Proses terbentuknya identitas personal dalam diri individu paling utama dipengaruhi oleh...",
-                options: ["Faktor genetik dan keturunan.", "Lingkungan alam tempat tinggal.", "Interaksi sosial dengan individu lain dan kelompok.", "Kekuatan spiritual dan keagamaan.", "Keberuntungan dan kesempatan yang datang."],
-                correctAnswerIndex: 2,
-                explanation: "Interaksi sosial adalah fondasi utama pembentukan identitas personal, di mana individu belajar nilai, norma, dan peran dari lingkungannya."
-            },
-            {
-                question: "Perhatikan tabel berikut:\n| No. | Contoh Identitas Sosial |\n|-----|-------------------------|\n| 1   | Anggota klub motor      |\n| 2   | Seorang dokter          |\n| 3   | Siswa SMAN 1            |\n| 4   | Penggemar musik K-Pop   |\n| 5   | Penduduk asli Jawa      |\nYang termasuk contoh identitas sosial ditunjukkan oleh nomor...",
-                options: ["1, 2, dan 3", "1, 3, dan 4", "2, 4, dan 5", "1, 2, 3, dan 4", "1, 2, 3, 4, dan 5"],
-                correctAnswerIndex: 4, // All of them are examples of social identity
-                explanation: "Semua contoh di atas (anggota klub, profesi, status pelajar, penggemar, dan asal daerah) adalah bentuk-bentuk identitas sosial karena merujuk pada keanggotaan atau peran dalam suatu kelompok atau masyarakat."
-            },
-            {
-                question: "Kedudukan manusia sebagai makhluk sosial menunjukkan bahwa manusia...",
-                options: ["Mampu hidup sendiri tanpa bantuan orang lain.", "Selalu ingin bersaing dengan sesamanya.", "Membutuhkan interaksi dan kerjasama dengan orang lain.", "Lebih mengutamakan kepentingan pribadi.", "Dapat mencapai kebahagiaan tanpa hubungan sosial."],
-                correctAnswerIndex: 2,
-                explanation: "Sebagai makhluk sosial, manusia tidak dapat hidup sendiri dan selalu membutuhkan interaksi, komunikasi, serta kerjasama dengan individu lain."
-            },
-            {
-                question: "Salah satu faktor utama pembentukan identitas adalah...",
-                options: ["Bentuk fisik dan penampilan.", "Lingkungan geografis tempat tinggal.", "Pengalaman hidup dan interaksi sosial.", "Warna kulit dan ras.", "Kekayaan materi yang dimiliki."],
-                correctAnswerIndex: 2,
-                explanation: "Identitas dibentuk melalui pengalaman hidup dan terutama melalui interaksi sosial yang terus-menerus dengan lingkungan sekitar."
-            },
-            {
-                question: "Ani selalu tampil rapi dan tertib karena terbiasa melihat orang tuanya yang disiplin. Contoh ini menunjukkan identitas individu terbentuk berdasarkan faktor...",
-                options: ["Biologis", "Psikologis", "Sosial", "Budaya", "Geografis"],
-                correctAnswerIndex: 2,
-                explanation: "Contoh ini menunjukkan pengaruh faktor sosial (keluarga/orang tua) dalam pembentukan identitas dan perilaku individu."
-            },
-            {
-                question: "Contoh kelompok sosial berdasarkan kesamaan daerah adalah...",
-                options: ["Kelompok pecinta alam", "Fans klub sepak bola", "Ikatan Mahasiswa Papua di Yogyakarta", "Komunitas gamers online", "Perkumpulan pedagang pasar"],
-                correctAnswerIndex: 2,
-                explanation: "Ikatan Mahasiswa Papua di Yogyakarta adalah kelompok sosial yang terbentuk berdasarkan kesamaan asal daerah."
-            },
-            {
-                question: "Pengaruh sosial terhadap peran individu dapat terlihat ketika...",
-                options: ["Seseorang memilih hobi berdasarkan minat pribadi.", "Individu menyesuaikan perilakunya dengan harapan kelompok.", "Seseorang mengembangkan bakat alami yang dimilikinya.", "Individu mengabaikan norma-norma yang berlaku.", "Seseorang mencapai tujuan tanpa campur tangan orang lain."],
-                correctAnswerIndex: 1,
-                explanation: "Pengaruh sosial seringkali menyebabkan individu untuk menyesuaikan perilaku, pikiran, atau perasaannya agar sesuai dengan harapan atau norma kelompok."
-            },
-            {
-                question: "Cara memperoleh status sosial individu melalui usaha dan kerja keras disebut...",
-                options: ["Ascribed status", "Achieved status", "Assigned status", "Inherited status", "Acquired status"],
-                correctAnswerIndex: 1,
-                explanation: "Achieved status adalah status yang diperoleh seseorang melalui usaha, kerja keras, dan prestasi yang dicapai."
-            },
-            {
-                question: "Seorang anak buruh pabrik berhasil menjadi seorang profesor di universitas ternama setelah menempuh pendidikan yang tinggi. Cara memperoleh status ini termasuk...",
-                options: ["Ascribed status", "Achieved status", "Assigned status", "Inherited status", "Acquired status"],
-                correctAnswerIndex: 1,
-                explanation: "Status profesor diperoleh melalui pendidikan dan usaha, sehingga termasuk achieved status."
-            },
-            {
-                question: "Faktor yang memengaruhi hancurnya gejala sosial adalah...",
-                options: ["Kurangnya interaksi sosial antarindividu.", "Ketidakmampuan masyarakat beradaptasi dengan perubahan.", "Adanya nilai dan norma yang kuat dalam masyarakat.", "Tingginya tingkat kesadaran hukum masyarakat.", "Stabilnya kondisi ekonomi masyarakat."],
-                correctAnswerIndex: 1,
-                explanation: "Ketidakmampuan masyarakat beradaptasi dengan perubahan dapat menyebabkan munculnya atau memburuknya gejala sosial negatif, seperti disorganisasi."
-            },
-            {
-                question: "Contoh gejala sosial berdasarkan pernyataan adalah...",
-                options: ["Terjadinya hujan deras yang menyebabkan banjir.", "Gempa bumi yang menghancurkan bangunan.", "Meningkatnya angka kriminalitas di perkotaan.", "Erupsi gunung berapi.", "Perubahan iklim global."],
-                correctAnswerIndex: 2,
-                explanation: "Meningkatnya angka kriminalitas adalah fenomena sosial yang disebabkan oleh interaksi dan struktur sosial, berbeda dengan fenomena alam."
-            },
-            {
-                question: "Gejala sosial yang ditandai dengan adanya kesenjangan ekonomi yang mencolok antara kelompok kaya dan miskin dalam masyarakat disebut...",
-                options: ["Modernisasi", "Globalisasi", "Ketimpangan sosial", "Urbanisasi", "Disorganisasi sosial"],
-                correctAnswerIndex: 2,
-                explanation: "Kesenjangan ekonomi yang mencolok antara kelompok kaya dan miskin adalah bentuk dari ketimpangan sosial."
-            },
-            {
-                question: "Upaya yang dapat dilakukan dalam mengatasi gejala sosial akibat perubahan adalah...",
-                options: ["Menolak semua bentuk perubahan sosial.", "Mengabaikan dampak negatif dari perubahan.", "Meningkatkan kesadaran masyarakat akan pentingnya adaptasi dan edukasi.", "Membatasi interaksi dengan budaya luar.", "Mengisolasi diri dari perkembangan teknologi."],
-                correctAnswerIndex: 2,
-                explanation: "Meningkatkan kesadaran dan edukasi adalah kunci agar masyarakat dapat beradaptasi secara positif terhadap perubahan sosial dan mengatasi gejala negatifnya."
-            },
-            {
-                question: "Identifikasi upaya dalam menjauhi pengaruh gejala sosial negatif adalah...",
-                options: ["Mengikuti semua tren yang ada di masyarakat.", "Memperkuat nilai-nilai agama dan moral pribadi.", "Lebih banyak menghabiskan waktu di media sosial.", "Menjauhkan diri dari pergaulan yang positif.", "Bersikap individualistis dan tidak peduli lingkungan."],
-                correctAnswerIndex: 1,
-                explanation: "Memperkuat nilai-nilai agama dan moral pribadi dapat menjadi benteng untuk menjauhi pengaruh gejala sosial negatif."
-            },
-            {
-                question: "Langkah preventif yang tepat dalam mengatasi gejala sosial pengangguran adalah...",
-                options: ["Meningkatkan jumlah angkatan kerja tanpa pelatihan.", "Memberikan bantuan sosial tanpa syarat.", "Mengembangkan pendidikan kejuruan dan kewirausahaan.", "Membatasi lapangan kerja bagi lulusan baru.", "Mengurangi investasi pada sektor industri."],
-                correctAnswerIndex: 2,
-                explanation: "Pendidikan kejuruan dan kewirausahaan membekali individu dengan keterampilan yang relevan dan kemampuan menciptakan lapangan kerja, sehingga mengurangi pengangguran."
-            },
-            {
-                question: "Lembaga sosial adalah...",
-                options: ["Sekelompok individu yang memiliki kesamaan hobi.", "Organisasi formal yang didirikan pemerintah.", "Suatu sistem norma dan aturan yang mengatur perilaku anggota masyarakat.", "Tempat berkumpulnya para pemimpin komunitas.", "Bangunan fisik tempat kegiatan sosial."],
-                correctAnswerIndex: 2,
-                explanation: "Lembaga sosial adalah pola perilaku yang mapan, terorganisir, dan melibatkan norma-norma untuk memenuhi kebutuhan dasar masyarakat."
-            },
-            {
-                question: "Ciri-ciri lembaga sosial berdasarkan simbol atau ciri khasnya dapat dilihat dari...",
-                options: ["Struktur organisasi yang tidak jelas.", "Adanya lambang, bendera, atau ritual tertentu.", "Jumlah anggotanya yang sangat banyak.", "Lokasi fisiknya yang terpencil.", "Tidak adanya tujuan yang jelas."],
-                correctAnswerIndex: 1,
-                explanation: "Lembaga sosial seringkali memiliki simbol, lambang, atau ritual yang menjadi ciri khas dan membedakannya dari lembaga lain."
-            },
-            {
-                question: "'Peraturan lalu lintas yang mengatur pengendara di jalan raya' merupakan ciri lembaga sosial berdasarkan pernyataan bahwa lembaga sosial memiliki...",
-                options: ["Usia yang sangat tua.", "Alat-alat perlengkapan.", "Norma-norma yang jelas dan tertulis.", "Ideologi atau cita-cita.", "Tujuan yang tidak dapat diubah."],
-                correctAnswerIndex: 2,
-                explanation: "Lembaga sosial dicirikan oleh adanya seperangkat norma dan aturan yang mengatur perilaku anggotanya."
-            },
-            {
-                question: "Fungsi manifest lembaga sosial adalah...",
-                options: ["Fungsi yang tidak disadari dan tidak direncanakan.", "Fungsi yang tersembunyi dan tidak tampak.", "Fungsi utama yang disadari dan dikehendaki oleh anggota masyarakat.", "Fungsi yang hanya bermanfaat bagi sebagian kecil anggota masyarakat.", "Fungsi yang muncul secara tidak sengaja."],
-                correctAnswerIndex: 2,
-                explanation: "Fungsi manifest adalah fungsi yang jelas, disadari, dan menjadi tujuan utama pembentukan lembaga sosial."
-            },
-            {
-                question: "Lembaga sosial yang berfungsi mengatur hubungan antar individu dalam memenuhi kebutuhan ekonomi adalah...",
-                options: ["Lembaga Keluarga", "Lembaga Pendidikan", "Lembaga Ekonomi", "Lembaga Agama", "Lembaga Politik"],
-                correctAnswerIndex: 2,
-                explanation: "Lembaga ekonomi mengatur produksi, distribusi, dan konsumsi barang dan jasa dalam masyarakat."
-            },
-            {
-                question: "Lembaga sosial yang berperan dalam pewarisan nilai dan norma serta sosialisasi awal individu adalah...",
-                options: ["Lembaga Ekonomi", "Lembaga Politik", "Lembaga Agama", "Lembaga Keluarga", "Lembaga Pendidikan"],
-                correctAnswerIndex: 3,
-                explanation: "Lembaga keluarga adalah agen sosialisasi primer yang pertama kali menanamkan nilai dan norma pada individu."
-            },
-            {
-                question: "Lembaga sosial yang berfungsi untuk mengatur dan mengawasi jalannya pemerintahan serta distribusi kekuasaan adalah...",
-                options: ["Lembaga Ekonomi", "Lembaga Pendidikan", "Lembaga Keluarga", "Lembaga Politik", "Lembaga Hukum"],
-                correctAnswerIndex: 3,
-                explanation: "Lembaga politik berfokus pada pengaturan kekuasaan, pemerintahan, dan pengambilan keputusan di masyarakat."
-            },
-            {
-                question: "Stratifikasi sosial adalah...",
-                options: ["Pengelompokan individu berdasarkan hobi.", "Pembedaan posisi individu atau kelompok secara vertikal dalam masyarakat.", "Pemisahan masyarakat berdasarkan jenis kelamin.", "Pembentukan kelompok sosial berdasarkan kesamaan daerah.", "Penyatuan semua anggota masyarakat dalam satu tingkatan."],
-                correctAnswerIndex: 1,
-                explanation: "Stratifikasi sosial adalah pengelompokan anggota masyarakat berdasarkan status sosialnya secara bertingkat (hierarki)."
-            },
-            {
-                question: "Ciri utama dari stratifikasi sosial terbuka adalah...",
-                options: ["Mobilitas sosial sangat terbatas.", "Kedudukan individu ditentukan sejak lahir.", "Seseorang dapat berpindah strata sosial.", "Adanya kasta yang bersifat permanen.", "Masyarakat dibagi menjadi kelas-kelas yang kaku."],
-                correctAnswerIndex: 2,
-                explanation: "Dalam stratifikasi sosial terbuka, individu memiliki kesempatan untuk berpindah dari satu strata ke strata lain melalui usaha, pendidikan, atau prestasi."
-            },
-            {
-                question: "Dalam sistem stratifikasi sosial kasta, seseorang yang lahir sebagai Brahmana akan selalu menjadi Brahmana. Ini menunjukkan sifat stratifikasi sosial yang...",
-                options: ["Terbuka", "Tertutup", "Campuran", "Fleksibel", "Dinamis"],
-                correctAnswerIndex: 1,
-                explanation: "Stratifikasi tertutup adalah sistem di mana mobilitas sosial sangat sulit atau tidak mungkin terjadi, seperti dalam sistem kasta."
-            },
-            {
-                question: "Contoh stratifikasi sosial adalah...",
-                options: ["Perbedaan jenis pekerjaan antara petani dan nelayan.", "Pengelompokan siswa berdasarkan minat belajar.", "Pembagian masyarakat menjadi kelas atas, menengah, dan bawah.", "Pembentukan klub motor di suatu kota.", "Perbedaan hobi antara bermain musik dan membaca buku."],
-                correctAnswerIndex: 2,
-                explanation: "Pembagian masyarakat menjadi kelas atas, menengah, dan bawah adalah contoh paling jelas dari stratifikasi sosial berdasarkan ekonomi atau kekayaan."
-            },
-            {
-                question: "Dasar stratifikasi sosial yang paling umum di masyarakat modern adalah...",
-                options: ["Keturunan", "Kekuasaan", "Pendidikan", "Harta/kekayaan", "Jenis kelamin"],
-                correctAnswerIndex: 3,
-                explanation: "Di masyarakat modern, harta/kekayaan sering menjadi dasar utama dalam menentukan posisi seseorang dalam stratifikasi sosial."
-            },
-            {
-                question: "Sifat stratifikasi sosial yang menggambarkan masyarakat yang masih sangat terikat pada sistem feodal atau kasta adalah...",
-                options: ["Terbuka", "Tertutup", "Dinamis", "Fleksibel", "Campuran"],
-                correctAnswerIndex: 1,
-                explanation: "Sistem feodal atau kasta adalah contoh stratifikasi sosial tertutup, di mana posisi sosial ditentukan oleh kelahiran dan sulit diubah."
-            },
-            {
-                question: "Dampak negatif dari stratifikasi sosial yang ekstrem adalah...",
-                options: ["Mendorong persaingan yang sehat.", "Menciptakan kesenjangan sosial dan konflik.", "Meningkatkan solidaritas antar kelompok.", "Mempercepat mobilitas sosial.", "Mengurangi tingkat kemiskinan."],
-                correctAnswerIndex: 1,
-                explanation: "Stratifikasi sosial yang ekstrem dapat memicu kesenjangan yang lebar dan berpotensi menimbulkan konflik antar kelas sosial."
-            },
-            {
-                question: "Konsep mobilitas sosial adalah...",
-                options: ["Perubahan posisi individu atau kelompok dalam struktur sosial.", "Perpindahan geografis individu dari satu tempat ke tempat lain.", "Perubahan selera dan gaya hidup individu.", "Perkembangan teknologi dalam masyarakat.", "Pembentukan kelompok sosial baru."],
-                correctAnswerIndex: 0,
-                explanation: "Mobilitas sosial adalah perpindahan individu atau kelompok dari satu lapisan sosial ke lapisan sosial lainnya."
-            },
-            {
-                question: "Contoh mobilitas sosial vertikal naik adalah...",
-                options: ["Seorang karyawan dipindahkan ke divisi lain dengan jabatan yang sama.", "Anak seorang petani berhasil menjadi seorang direktur perusahaan.", "Seseorang beralih pekerjaan dari guru menjadi dosen.", "Sebuah keluarga pindah rumah dari desa ke kota.", "Seorang mahasiswa lulus kuliah dan bekerja di bidang yang sama dengan orang tuanya."],
-                correctAnswerIndex: 1,
-                explanation: "Perpindahan dari status sosial rendah (anak petani) ke status sosial tinggi (direktur perusahaan) adalah contoh mobilitas vertikal naik."
-            },
-            {
-                question: "Seorang anak dari keluarga kurang mampu berhasil masuk perguruan tinggi negeri favorit melalui jalur beasiswa. Saluran mobilitas sosial yang paling menonjol dalam ilustrasi ini adalah...",
-                options: ["Organisasi politik", "Organisasi ekonomi", "Lembaga pendidikan", "Organisasi profesi", "Lembaga keagamaan"],
-                correctAnswerIndex: 2,
-                explanation: "Lembaga pendidikan seringkali menjadi saluran utama mobilitas sosial karena memberikan kesempatan untuk meningkatkan pengetahuan dan keterampilan."
-            },
-            {
-                question: "Salah satu dampak negatif mobilitas sosial adalah...",
-                options: ["Meningkatnya integrasi sosial.", "Terjadinya disorganisasi sosial dan konflik antarkelas.", "Mendorong peningkatan kualitas hidup.", "Memperkuat solidaritas kelompok.", "Memperluas jaringan sosial individu."],
-                correctAnswerIndex: 1,
-                explanation: "Meskipun mobilitas sosial memiliki dampak positif, terkadang juga dapat menyebabkan disorganisasi dan konflik jika perubahan status menimbulkan ketegangan antarindividu atau kelompok."
-            },
-            {
-                question: "Permasalahan sosial adalah...",
-                options: ["Segala sesuatu yang menjadi masalah pribadi individu.", "Kondisi yang tidak diinginkan dan dianggap membahayakan masyarakat.", "Peristiwa alam yang tidak dapat dihindari.", "Konflik antarnegara.", "Perubahan budaya yang terjadi secara perlahan."],
-                correctAnswerIndex: 1,
-                explanation: "Permasalahan sosial adalah kondisi yang memengaruhi sejumlah besar individu dalam masyarakat dan dianggap sebagai ancaman terhadap nilai-nilai sosial."
-            },
-            {
-                question: "Memahami konsep etnosentrisme sebagai permasalahan sosial berarti menyadari bahwa etnosentrisme dapat...",
-                options: ["Memperkuat rasa kebangsaan.", "Memicu konflik dan diskriminasi antarkelompok.", "Meningkatkan toleransi antarbudaya.", "Memperkaya khazanah budaya.", "Mengurangi kesenjangan sosial."],
-                correctAnswerIndex: 1,
-                explanation: "Etnosentrisme, yaitu kecenderungan menganggap budaya sendiri paling benar dan merendahkan budaya lain, dapat memicu prasangka, stereotip, diskriminasi."
-            },
-            {
-                question: "Contoh etnosentrisme sebagai permasalahan sosial adalah...",
-                options: ["Seseorang bangga akan kebudayaan daerahnya sendiri.", "Kelompok A menganggap budayanya paling unggul dan merendahkan budaya kelompok B.", "Terjadinya pertukaran budaya antarnegara.", "Perayaan hari raya keagamaan bersama.", "Kolaborasi seni dari berbagai daerah."],
-                correctAnswerIndex: 1,
-                explanation: "Contoh ini jelas menunjukkan sikap menganggap budaya sendiri superior dan merendahkan budaya lain, yang merupakan inti dari etnosentrisme negatif."
-            },
-            {
-                question: "Upaya yang dapat dilakukan untuk mencegah permasalahan sosial adalah...",
-                options: ["Meningkatkan individualisme di masyarakat.", "Mengabaikan keberagaman budaya.", "Memperkuat nilai-nilai toleransi dan pluralisme.", "Membatasi interaksi antar kelompok yang berbeda.", "Menghilangkan perbedaan sosial."],
-                correctAnswerIndex: 2,
-                explanation: "Memperkuat nilai-nilai toleransi dan pluralisme membantu masyarakat menerima perbedaan dan mengurangi potensi konflik sosial."
-            },
-            {
-                question: "Upaya yang tepat untuk meningkatkan kerukunan masyarakat adalah...",
-                options: ["Menciptakan persaingan antarkelompok.", "Mengadakan dialog antarumat beragama dan antarkelompok.", "Menekankan perbedaan suku dan agama.", "Mengisolasi kelompok minoritas.", "Menutup diri dari pengaruh luar."],
-                correctAnswerIndex: 1,
-                explanation: "Dialog dan komunikasi terbuka antarumat beragama dan antarkelompok adalah cara efektif untuk membangun pemahaman dan kerukunan."
-            },
-            {
-                question: "Sikap yang tepat dalam menyikapi keragaman dalam masyarakat adalah...",
-                options: ["Bersikap fanatik terhadap kelompok sendiri.", "Menganggap kelompok lain lebih rendah.", "Mengembangkan sikap toleransi dan saling menghormati.", "Menghindari interaksi dengan kelompok yang berbeda.", "Memaksakan pandangan sendiri kepada orang lain."],
-                correctAnswerIndex: 2,
-                explanation: "Toleransi dan saling menghormati adalah kunci untuk menjaga keharmonisan di tengah keragaman masyarakat."
-            }
+            
+    {
+        "question": "Bagaimana sosiologi memahami konsep identitas individu?",
+        "options": [
+            "Sebagai bawaan genetik sejak lahir yang tidak dapat berubah.",
+            "Sebagai totalitas ciri-ciri fisik yang membedakan satu orang dengan yang lain.",
+            "Sebagai konstruksi sosial yang terbentuk melalui interaksi dan pengalaman hidup.",
+            "Sebagai sifat dasar kepribadian yang sudah ditentukan oleh lingkungan alam.",
+            "Sebagai hasil dari pilihan murni individu tanpa pengaruh eksternal."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Dalam sosiologi, identitas dipahami sebagai konsep diri yang dinamis, dibentuk dan dipelihara melalui proses sosialisasi dan interaksi berkelanjutan dengan lingkungan sosial. Identitas bukan hanya bawaan lahir atau pilihan individual murni, melainkan produk dari bagaimana individu berinteraksi dan menginternalisasi nilai, norma, serta peran dari masyarakatnya."
+    },
+    {
+        "question": "Proses utama yang paling signifikan dalam pembentukan identitas personal seseorang menurut pandangan sosiologi adalah melalui...",
+        "options": [
+            "Refleksi diri yang mendalam tanpa pengaruh eksternal.",
+            "Pewarisan genetik dari orang tua ke anak.",
+            "Interaksi sosial dengan lingkungan sekitar dan internalisasi nilai.",
+            "Pengaruh langsung dari media massa dan teknologi modern.",
+            "Pencapaian akademik dan profesional di usia dewasa."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Pembentukan identitas personal adalah hasil dari interaksi sosial yang terus-menerus. Melalui interaksi dengan keluarga, teman sebaya, sekolah, dan masyarakat luas, individu belajar norma, nilai, peran, dan cara melihat dirinya sendiri (konsep diri). Proses sosialisasi ini menjadi fondasi utama identitas seseorang."
+    },
+    {
+        "question": "Perhatikan contoh identitas berikut:\n1. Memiliki rambut hitam lurus\n2. Seorang mahasiswa universitas\n3. Cerdas dalam bidang matematika\n4. Anggota komunitas pecinta lingkungan\n5. Beragama Islam\nYang termasuk contoh identitas sosial ditunjukkan oleh nomor...",
+        "options": [
+            "1, 2, dan 3",
+            "2, 3, dan 4",
+            "2, 4, dan 5",
+            "1, 3, dan 5",
+            "1, 2, 3, 4, dan 5"
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Identitas sosial merujuk pada bagian dari konsep diri individu yang berasal dari keanggotaannya dalam kelompok sosial tertentu atau kategori sosial. Oleh karena itu:\n- **2. Seorang mahasiswa universitas:** Ini adalah peran dan status dalam kelompok sosial (lembaga pendidikan).\n- **4. Anggota komunitas pecinta lingkungan:** Ini adalah keanggotaan dalam sebuah kelompok minat atau organisasi sosial.\n- **5. Beragama Islam:** Ini adalah identitas keagamaan, yang merupakan bagian dari identitas sosial dalam konteks kelompok agama.\nSedangkan, 'Memiliki rambut hitam lurus' (1) adalah ciri fisik/biologis, dan 'Cerdas dalam bidang matematika' (3) adalah ciri personal/psikologis, bukan identitas sosial."
+    },
+    {
+        "question": "Kedudukan manusia sebagai makhluk sosial (homo socius) paling tepat diidentifikasi melalui pernyataan bahwa manusia...",
+        "options": [
+            "Mampu bertahan hidup sepenuhnya secara mandiri tanpa bantuan orang lain.",
+            "Selalu ingin berkompetisi dengan individu lain untuk mencapai dominasi.",
+            "Memiliki kebutuhan dasar untuk berinteraksi, berkomunikasi, dan bekerja sama dengan sesamanya.",
+            "Lebih mengutamakan pemenuhan kebutuhan pribadi di atas kebutuhan kolektif.",
+            "Dapat mencapai kebahagiaan dan kesejahteraan optimal dalam isolasi sosial."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Konsep 'homo socius' menekankan bahwa manusia secara kodrat tidak dapat hidup sendiri. Mereka memiliki dorongan dan kebutuhan fundamental untuk bersosialisasi, berinteraksi, berkomunikasi, serta membentuk hubungan dan kelompok sosial. Kebahagiaan dan kelangsungan hidup manusia sangat bergantung pada interaksi dan kerjasama dengan individu lain."
+    },
+    {
+        "question": "Pernyataan yang paling akurat mengenai faktor utama pembentuk identitas individu dalam kajian sosiologi adalah...",
+        "options": [
+            "Identitas sebagian besar ditentukan oleh susunan genetik yang diwarisi dari orang tua.",
+            "Lingkungan geografis tempat tinggal merupakan penentu utama arah identitas seseorang.",
+            "Identitas terbentuk melalui proses sosialisasi yang melibatkan internalisasi nilai dan norma masyarakat.",
+            "Kecerdasan intelektual dan bakat alami adalah faktor dominan yang membentuk identitas.",
+            "Pilihan personal dan kehendak bebas individu adalah satu-satunya penentu identitas."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Dalam sosiologi, sosialisasi merupakan faktor paling fundamental dalam pembentukan identitas. Melalui sosialisasi, individu belajar dan menginternalisasi nilai-nilai, norma-norma, peran-peran, dan bahasa dari lingkungan sosialnya (keluarga, sekolah, teman sebaya, media). Proses inilah yang membentuk siapa diri seseorang dalam konteks masyarakat."
+    },
+    {
+        "question": "Budi, seorang anak dari keluarga miskin, berhasil kuliah di universitas ternama dan menjadi seorang ahli IT yang sukses. Pembentukan identitas Budi sebagai ahli IT yang sukses ini paling tepat dianalisis berdasarkan faktor...",
+        "options": [
+            "Biologis",
+            "Lingkungan geografis",
+            "Pengalaman hidup dan interaksi sosial",
+            "Keturunan",
+            "Nasib semata"
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Keberhasilan Budi menjadi ahli IT yang sukses adalah hasil dari serangkaian pengalaman hidup (seperti mendapatkan beasiswa dan menempuh pendidikan tinggi) dan interaksi sosial (belajar dari dosen, berinteraksi dengan teman-teman di kampus, serta bekerja di lingkungan profesional). Faktor-faktor inilah yang membentuk identitas baru Budi sebagai seorang profesional sukses, bukan hanya faktor biologis, geografis, keturunan, atau nasib."
+    },
+    {
+        "question": "Berikut ini adalah beberapa contoh kelompok sosial:\n1. Kumpulan penggemar K-Pop di suatu kota\n2. Ikatan Keluarga Minang Jakarta (IKMJA)\n3. Asosiasi Pengusaha Muda Indonesia (APMI)\n4. Komunitas pecinta sepeda gunung\n5. Paguyuban Warga Jawa Barat (PWB) di Surabaya\nYang merupakan contoh kelompok sosial berdasarkan kesamaan daerah ditunjukkan oleh nomor...",
+        "options": [
+            "1 dan 3",
+            "2 dan 5",
+            "3 dan 4",
+            "1, 2, dan 4",
+            "2, 3, dan 5"
+        ],
+        "correctAnswerIndex": 1,
+        "explanation": "Kelompok sosial berdasarkan kesamaan daerah adalah kelompok yang anggotanya memiliki ikatan karena berasal dari wilayah geografis atau etnis yang sama, meskipun mungkin kini tinggal di tempat berbeda. Ikatan Keluarga Minang Jakarta (IKMJA) adalah kelompok orang Minang di Jakarta, dan Paguyuban Warga Jawa Barat (PWB) di Surabaya adalah kelompok orang Jawa Barat di Surabaya. Keduanya jelas didasarkan pada kesamaan daerah asal."
+    },
+    {
+        "question": "Seorang siswa di sekolahnya diharapkan untuk patuh pada peraturan, rajin belajar, dan menghormati guru. Kondisi ini menunjukkan bahwa...",
+        "options": [
+            "Status sosial tidak memengaruhi peran individu.",
+            "Peran individu ditentukan sepenuhnya oleh bakat alamiah.",
+            "Pengaruh sosial membentuk individu untuk menjalankan perannya sesuai harapan kelompok.",
+            "Individu bebas menentukan perannya tanpa terikat status.",
+            "Status sosial hanya relevan dalam konteks ekonomi."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Dalam sosiologi, peran adalah perilaku yang diharapkan dari seseorang yang menempati status sosial tertentu (dalam hal ini, status sebagai siswa). Harapan-harapan perilaku ini terbentuk dari norma dan nilai sosial yang berlaku dalam lingkungan (sekolah), yang kemudian memengaruhi individu untuk menyesuaikan perilakunya (pengaruh sosial) agar sesuai dengan peran yang diemban."
+    },
+    {
+        "question": "Dalam sosiologi, status sosial yang diperoleh seseorang melalui usaha, kerja keras, dan prestasi yang dicapai sepanjang hidupnya disebut...",
+        "options": [
+            "Ascribed status",
+            "Achieved status",
+            "Assigned status",
+            "Inherited status",
+            "Default status"
+        ],
+        "correctAnswerIndex": 1,
+        "explanation": "**Achieved status** adalah status yang didapatkan individu melalui usaha, kerja keras, kompetensi, dan pencapaian pribadi. Contohnya adalah seorang dokter, profesor, pengusaha, atau atlet profesional. Ini berbeda dengan **Ascribed status** (status bawaan sejak lahir) dan **Assigned status** (status yang diberikan sebagai penghargaan)."
+    },
+    {
+        "question": "Perhatikan pernyataan berikut:\n1. Seorang anak lahir sebagai bangsawan dan mendapatkan gelar kebangsawanan.\n2. Seorang buruh pabrik yang berkat kegigihannya berhasil menjadi manajer.\n3. Seseorang diberikan gelar pahlawan atas jasa-jasanya kepada negara.\n4. Seorang mahasiswa lulus dengan predikat *cum laude* dan langsung diterima di perusahaan multinasional.\nPernyataan yang menunjukkan cara memperoleh status melalui **achieved status** adalah nomor...",
+        "options": [
+            "1 dan 2",
+            "1 dan 3",
+            "2 dan 4",
+            "3 dan 4",
+            "1, 2, dan 4"
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Achieved status adalah status yang diperoleh melalui usaha dan prestasi individu. Oleh karena itu:\n- Pernyataan 2 (buruh menjadi manajer) menunjukkan kenaikan status melalui kerja keras dan upaya.\n- Pernyataan 4 (lulus *cum laude* dan diterima di perusahaan multinasional) menunjukkan pencapaian akademik dan profesional.\nSedangkan, pernyataan 1 adalah *ascribed status* (bawaan lahir), dan pernyataan 3 adalah *assigned status* (pemberian/penghargaan dari masyarakat)."
+    },
+    {
+        "question": "Salah satu faktor utama yang dapat memicu munculnya gejala sosial negatif, seperti ketimpangan ekonomi yang makin lebar, adalah...",
+        "options": [
+            "Stabilitas politik yang sangat kuat.",
+            "Tingkat pendidikan yang merata di seluruh lapisan masyarakat.",
+            "Perubahan sosial yang cepat dan ketidakmampuan masyarakat beradaptasi.",
+            "Sistem kontrol sosial yang sangat efektif.",
+            "Ketersediaan sumber daya alam yang melimpah."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Gejala sosial negatif seringkali muncul sebagai konsekuensi dari perubahan sosial yang terjadi terlalu cepat atau ketika masyarakat tidak mampu beradaptasi dengan perubahan tersebut. Ketidakmampuan beradaptasi ini dapat menyebabkan disorganisasi sosial, munculnya masalah baru seperti pengangguran struktural, atau memburuknya kesenjangan ekonomi jika tidak ada kebijakan yang mendukung adaptasi."
+    },
+    {
+        "question": "Pernyataan berikut yang paling tepat menggambarkan suatu gejala sosial adalah...",
+        "options": [
+            "Terjadinya gempa bumi berkekuatan tinggi di wilayah pegunungan.",
+            "Erupsi gunung berapi yang mengeluarkan awan panas.",
+            "Meningkatnya angka kenakalan remaja akibat pengaruh media sosial dan lingkungan pergaulan.",
+            "Perubahan cuaca ekstrem yang menyebabkan banjir di beberapa daerah.",
+            "Wabah penyakit yang menyebar cepat karena faktor biologis."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Gejala sosial adalah fenomena yang timbul dari interaksi sosial dan struktur masyarakat. Opsi C (kenakalan remaja) jelas merupakan masalah sosial yang dipengaruhi oleh lingkungan sosial, pendidikan, dan interaksi individu. Sedangkan opsi lainnya (gempa, erupsi, banjir, wabah penyakit) lebih merupakan fenomena alam atau biologis, meskipun dampaknya bisa menimbulkan masalah sosial."
+    },
+    {
+        "question": "Kondisi di mana masyarakat mengalami disintegrasi norma dan nilai-nilai yang berlaku, sehingga menyebabkan kebingungan dan perilaku menyimpang, disebut sebagai...",
+        "options": [
+            "Modernisasi",
+            "Globalisasi",
+            "Anomie",
+            "Urbanisasi",
+            "Konsumerisme"
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "**Anomie** adalah konsep sosiologis yang diperkenalkan oleh Emile Durkheim, merujuk pada keadaan di mana norma-norma sosial kehilangan kekuatannya dalam mengatur perilaku individu. Kondisi ini sering terjadi akibat perubahan sosial yang cepat, menyebabkan kebingungan, disorientasi, dan peningkatan perilaku menyimpang atau deviasi sosial karena individu tidak lagi memiliki pedoman moral yang jelas."
+    },
+    {
+        "question": "Untuk mengatasi gejala sosial negatif yang muncul akibat perubahan sosial yang cepat, upaya yang paling efektif dan berkelanjutan adalah...",
+        "options": [
+            "Mengisolasi masyarakat dari pengaruh luar dan teknologi baru.",
+            "Menolak semua bentuk perubahan dan kembali ke tradisi lama.",
+            "Membatasi interaksi antar kelompok yang berbeda di masyarakat.",
+            "Meningkatkan literasi masyarakat dan kemampuan adaptasi terhadap perubahan positif.",
+            "Hanya memberikan bantuan sosial tanpa upaya pemberdayaan."
+        ],
+        "correctAnswerIndex": 3,
+        "explanation": "Perubahan sosial tidak dapat dihindari. Upaya yang paling efektif adalah dengan meningkatkan kemampuan masyarakat untuk beradaptasi. Literasi (pengetahuan dan pemahaman) akan membantu masyarakat memilah informasi dan teknologi, sementara kemampuan adaptasi membuat mereka fleksibel dalam menghadapi tantangan baru tanpa harus menolak perubahan."
+    },
+    {
+        "question": "Langkah preventif (pencegahan) yang paling efektif untuk mengatasi gejala sosial pengangguran adalah...",
+        "options": [
+            "Hanya memberikan bantuan tunai kepada para penganggur.",
+            "Mengurangi jumlah investasi di sektor industri padat karya.",
+            "Mengembangkan pendidikan kejuruan yang relevan dengan kebutuhan pasar kerja dan mendorong kewirausahaan.",
+            "Membatasi mobilitas penduduk dari desa ke kota.",
+            "Menurunkan standar kelulusan pendidikan untuk memperbanyak tenaga kerja."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Langkah preventif bertujuan mencegah masalah sebelum terjadi. Pengangguran seringkali disebabkan oleh ketidaksesuaian keterampilan dengan kebutuhan pasar. Mengembangkan pendidikan kejuruan yang sesuai (misalnya, melalui SMK atau pelatihan vokasi) dan mendorong kewirausahaan (menciptakan lapangan kerja sendiri) adalah cara proaktif untuk membekali individu agar siap menghadapi dunia kerja atau menciptakan peluang kerja."
+    },
+    {
+        "question": "Salah satu upaya paling fundamental bagi individu untuk menjauhi pengaruh gejala sosial negatif, seperti kenakalan remaja atau penyalahgunaan narkoba, adalah...",
+        "options": [
+            "Lebih banyak menghabiskan waktu di media sosial tanpa pengawasan.",
+            "Bersikap individualistis dan tidak peduli terhadap lingkungan sosial.",
+            "Memperkuat nilai-nilai agama dan moral pribadi sebagai benteng diri.",
+            "Mengikuti semua tren dan gaya hidup populer tanpa filter.",
+            "Menghindari segala bentuk interaksi dengan lingkungan sekitar."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Memperkuat nilai-nilai agama dan moral pribadi akan membentuk karakter dan pedoman yang kuat bagi individu. Nilai-nilai ini berfungsi sebagai 'benteng' yang membantu individu membuat keputusan yang baik, menolak tekanan negatif dari lingkungan, dan menjauhi perilaku menyimpang yang dapat memicu gejala sosial negatif seperti kenakalan remaja atau penyalahgunaan narkoba."
+    },
+    {
+        "question": "Pernyataan yang paling tepat menjelaskan pengertian lembaga sosial adalah...",
+        "options": [
+            "Sekumpulan individu yang berkumpul untuk tujuan rekreasi semata.",
+            "Bangunan fisik tempat dilakukannya kegiatan pemerintahan atau bisnis.",
+            "Sistem norma dan aturan yang mengatur pola perilaku masyarakat untuk memenuhi kebutuhan dasar.",
+            "Organisasi nirlaba yang didirikan untuk memberikan bantuan kepada yang membutuhkan.",
+            "Kumpulan orang yang memiliki hobi atau minat yang sama dan berinteraksi secara informal."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Dalam sosiologi, lembaga sosial bukanlah sekadar bangunan atau organisasi, melainkan suatu sistem pola perilaku, norma, dan aturan yang telah mapan dan disepakati bersama oleh masyarakat untuk memenuhi kebutuhan-kebutuhan dasar (seperti kebutuhan akan keluarga, pendidikan, ekonomi, agama, atau ketertiban). Contohnya, keluarga, sekolah, pasar, dan sistem hukum."
+    },
+    {
+        "question": "Lembaga sosial seringkali memiliki ciri khas yang membedakannya dari bentuk organisasi lain. Salah satu ciri yang berkaitan dengan simbol atau ciri khas adalah...",
+        "options": [
+            "Memiliki anggota yang berjumlah sangat besar dan beragam.",
+            "Adanya lambang, bendera, ritual, atau atribut tertentu yang menjadi identitasnya.",
+            "Usia lembaga yang relatif baru dan mudah berubah.",
+            "Struktur organisasi yang tidak jelas dan fleksibel.",
+            "Sumber dana yang sepenuhnya bergantung pada sumbangan masyarakat."
+        ],
+        "correctAnswerIndex": 1,
+        "explanation": "Ciri khas lembaga sosial antara lain adalah adanya simbol, lambang, ritual, atau atribut yang menjadi identitas dan pembeda. Contohnya, cincin kawin sebagai simbol lembaga keluarga, seragam sekolah sebagai atribut lembaga pendidikan, atau ritual keagamaan sebagai ciri lembaga agama. Ini membantu mengidentifikasi dan membedakan peran serta fungsi setiap lembaga."
+    },
+    {
+        "question": "Perhatikan pernyataan berikut: 'Sekolah memiliki kurikulum yang jelas, aturan tata tertib yang wajib ditaati siswa, serta seragam dan lencana sebagai identitas.' Ini menunjukkan ciri lembaga sosial yang memiliki...",
+        "options": [
+            "Usia yang relatif tua",
+            "Alat-alat perlengkapan",
+            "Norma-norma yang jelas dan tertulis",
+            "Tujuan yang tidak dapat diubah",
+            "Ideologi atau cita-cita bersama"
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Pernyataan tersebut secara spesifik menyebutkan 'kurikulum yang jelas' dan 'aturan tata tertib yang wajib ditaati'. Ini adalah contoh nyata dari norma-norma yang jelas, baik yang tertulis (kurikulum, tata tertib sekolah) maupun yang tidak tertulis, yang mengatur perilaku anggota lembaga (siswa dan guru). Seragam dan lencana juga merupakan simbol atau ciri khas lembaga."
+    },
+    {
+        "question": "Salah satu fungsi manifes (nyata dan disadari) dari lembaga pendidikan adalah...",
+        "options": [
+            "Menjadi tempat mencari pasangan hidup.",
+            "Menunda usia pernikahan bagi sebagian individu.",
+            "Mentransfer ilmu pengetahuan dan keterampilan kepada generasi muda.",
+            "Menciptakan kesenjangan sosial antar siswa.",
+            "Mempererat hubungan antar wali murid."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Fungsi manifes adalah fungsi yang disadari, direncanakan, dan merupakan tujuan utama dari pembentukan suatu lembaga. Tujuan utama lembaga pendidikan adalah untuk memberikan pengetahuan (ilmu pengetahuan), mengembangkan kemampuan (keterampilan), dan membentuk karakter (nilai-nilai) pada generasi muda, sehingga mereka siap menghadapi kehidupan sosial dan profesional."
+    },
+    {
+        "question": "Pernyataan yang paling tepat menjelaskan konsep masyarakat multikultural adalah...",
+        "options": [
+            "Masyarakat yang seluruh anggotanya memiliki budaya, suku, dan agama yang sama.",
+            "Masyarakat di mana hanya ada satu budaya dominan yang diakui secara resmi.",
+            "Masyarakat yang terdiri dari berbagai kelompok budaya, suku, agama, dan ras yang hidup berdampingan dan saling menghargai.",
+            "Masyarakat yang mengalami akulturasi budaya secara total, sehingga semua perbedaan menghilang.",
+            "Masyarakat yang terbagi menjadi kelompok-kelompok yang saling mengisolasi diri."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Masyarakat multikultural adalah masyarakat yang mengakui, menghargai, dan merayakan keberadaan berbagai kelompok budaya, etnis, agama, dan ras di dalamnya. Meskipun ada perbedaan, kelompok-kelompok ini hidup berdampingan, berinteraksi, dan berkontribusi pada kemajuan bersama, tanpa menghilangkan identitas masing-masing."
+    },
+    {
+        "question": "Sikap yang paling menunjukkan semangat multikulturalisme dalam kehidupan sehari-hari adalah...",
+        "options": [
+            "Menganggap budaya sendiri superior dibandingkan budaya lain.",
+            "Menghindari interaksi dengan orang-orang dari latar belakang budaya yang berbeda.",
+            "Bersedia belajar dan menghargai tradisi, kepercayaan, serta kebiasaan kelompok lain.",
+            "Memaksakan nilai-nilai budaya dominan kepada kelompok minoritas.",
+            "Hanya bergaul dengan orang yang memiliki kesamaan suku atau agama."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Semangat multikulturalisme ditandai dengan keterbukaan dan penghargaan terhadap perbedaan. Bersedia belajar tentang budaya lain, menghargai tradisi yang berbeda, dan menerima keberagaman adalah esensi dari sikap multikulturalisme yang positif dan konstruktif. Ini mendorong harmoni dan pemahaman antar kelompok."
+    },
+    {
+        "question": "Berikut ini yang bukan merupakan ciri-ciri masyarakat multikultural adalah...",
+        "options": [
+            "Adanya keragaman etnis, budaya, dan agama.",
+            "Terjadinya interaksi antar kelompok budaya yang berbeda.",
+            "Masing-masing kelompok memiliki identitas budaya yang jelas.",
+            "Adanya pengakuan dan penghargaan terhadap perbedaan budaya.",
+            "Tidak adanya potensi konflik karena perbedaan disatukan secara paksa."
+        ],
+        "correctAnswerIndex": 4,
+        "explanation": "Masyarakat multikultural memang ditandai oleh keragaman, interaksi, identitas kelompok yang jelas, serta pengakuan terhadap perbedaan. Namun, klaim 'tidak adanya potensi konflik' adalah pernyataan yang salah. Meskipun multikulturalisme mendorong toleransi dan harmoni, potensi konflik tetap ada karena perbedaan kepentingan, nilai, atau kesalahpahaman. Selain itu, 'disatukan secara paksa' bertentangan dengan semangat multikulturalisme yang menghargai kebebasan identitas."
+    },
+    {
+        "question": "Konsep diferensiasi sosial dalam sosiologi mengacu pada...",
+        "options": [
+            "Pengelompokan masyarakat secara vertikal berdasarkan status dan kekuasaan.",
+            "Pembagian masyarakat ke dalam kelas-kelas sosial yang hierarkis.",
+            "Pembedaan anggota masyarakat secara horizontal berdasarkan ciri-ciri fungsional atau atribut tertentu tanpa hierarki.",
+            "Pergerakan individu dari satu lapisan sosial ke lapisan lain.",
+            "Hilangnya perbedaan budaya dalam masyarakat akibat globalisasi."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Diferensiasi sosial adalah pembedaan anggota masyarakat ke dalam kelompok-kelompok yang berbeda berdasarkan ciri-ciri tertentu (seperti jenis kelamin, usia, ras, suku, profesi, agama) tanpa adanya tingkatan atau hierarki atas-bawah yang jelas. Artinya, perbedaan tersebut bersifat horizontal, bukan vertikal. Ini berbeda dengan stratifikasi sosial yang bersifat vertikal."
+    },
+    {
+        "question": "Contoh yang paling tepat menggambarkan diferensiasi sosial adalah...",
+        "options": [
+            "Pembagian masyarakat menjadi kelas atas, menengah, dan bawah.",
+            "Seorang guru, seorang dokter, dan seorang petani yang hidup berdampingan dalam masyarakat.",
+            "Sistem kasta yang membagi masyarakat berdasarkan keturunan.",
+            "Peningkatan status seorang karyawan menjadi manajer.",
+            "Perbedaan pendapatan antara CEO dan karyawan biasa dalam suatu perusahaan."
+        ],
+        "correctAnswerIndex": 1,
+        "explanation": "Diferensiasi sosial mengacu pada pembedaan masyarakat secara horizontal, yaitu berdasarkan ciri-ciri seperti profesi, jenis kelamin, ras, atau agama, tanpa adanya tingkatan sosial yang lebih tinggi atau lebih rendah secara inheren. Seorang guru, dokter, dan petani memiliki profesi yang berbeda, namun dalam konteks diferensiasi, tidak ada yang secara otomatis dianggap lebih tinggi atau lebih rendah dari yang lain; mereka memiliki fungsi yang berbeda dalam masyarakat. Opsi lain adalah contoh stratifikasi sosial (hierarki) atau mobilitas sosial."
+    },
+    {
+        "question": "Konsep stratifikasi sosial dalam sosiologi paling tepat didefinisikan sebagai...",
+        "options": [
+            "Pengelompokan individu berdasarkan hobi dan minat pribadi.",
+            "Perubahan kedudukan individu dalam struktur sosial secara acak.",
+            "Pembedaan posisi individu atau kelompok secara vertikal dalam masyarakat, membentuk lapisan-lapisan.",
+            "Penyatuan semua anggota masyarakat dalam satu tingkatan tanpa perbedaan.",
+            "Pembentukan kelompok sosial berdasarkan kesamaan geografis."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Stratifikasi sosial adalah sistem pengelompokan anggota masyarakat secara bertingkat atau hierarkis (vertikal) berdasarkan kriteria tertentu seperti kekayaan, kekuasaan, pendidikan, atau prestise. Hal ini menghasilkan lapisan-lapisan sosial, di mana ada kelompok di posisi atas, menengah, dan bawah. Contohnya adalah pembagian kelas sosial (atas, menengah, bawah) atau sistem kasta."
+    },
+    {
+        "question": "Pernyataan yang menunjukkan adanya stratifikasi sosial adalah...",
+        "options": [
+            "Siswa-siswa di kelas terbagi menjadi kelompok belajar yang berbeda.",
+            "Masyarakat yang terbagi menjadi kelompok elit, menengah, dan bawah berdasarkan tingkat kekayaan.",
+            "Pekerja di suatu perusahaan memiliki perbedaan usia.",
+            "Anggota sebuah komunitas memiliki hobi yang beragam.",
+            "Masyarakat terdiri dari berbagai suku bangsa yang berbeda."
+        ],
+        "correctAnswerIndex": 1,
+        "explanation": "Stratifikasi sosial adalah pembedaan masyarakat secara vertikal berdasarkan hierarki. Pembagian masyarakat menjadi kelompok elit, menengah, dan bawah berdasarkan tingkat kekayaan jelas menunjukkan adanya tingkatan atau lapisan sosial, di mana kelompok elit berada di atas, diikuti menengah, dan kemudian bawah. Ini adalah ciri utama dari stratifikasi sosial."
+    },
+    {
+        "question": "Bayangkan sebuah piramida sosial di mana di bagian paling atas terdapat sekelompok kecil orang yang memiliki aset tanah dan properti yang sangat luas, perusahaan-perusahaan besar, dan gaya hidup mewah. Di bagian tengah, ada kelompok profesional dan pekerja kerah putih dengan penghasilan stabil. Di bagian bawah, ada kelompok buruh harian dan pekerja informal dengan penghasilan minim. Dasar stratifikasi sosial yang paling menonjol pada piramida ini adalah...",
+        "options": [
+            "Keturunan",
+            "Kekuasaan",
+            "Pendidikan",
+            "Harta/kekayaan",
+            "Pekerjaan"
+        ],
+        "correctAnswerIndex": 3,
+        "explanation": "Piramida sosial yang dideskripsikan menunjukkan pembedaan lapisan masyarakat berdasarkan kepemilikan aset (tanah, properti), perusahaan, dan tingkat penghasilan (gaya hidup mewah, penghasilan stabil, penghasilan minim). Semua indikator ini secara langsung berkaitan dengan jumlah harta atau kekayaan yang dimiliki oleh individu atau kelompok, menjadikannya dasar stratifikasi yang paling menonjol dalam ilustrasi tersebut."
+    },
+    {
+        "question": "Dalam sistem kasta di India, seseorang yang lahir sebagai Brahmana (kasta tertinggi) akan selalu menjadi Brahmana, dan sangat sulit untuk berpindah ke kasta lain, begitu pula sebaliknya. Contoh ini paling tepat menggambarkan sifat stratifikasi sosial yang...",
+        "options": [
+            "Terbuka",
+            "Tertutup",
+            "Campuran",
+            "Dinamis",
+            "Fleksibel"
+        ],
+        "correctAnswerIndex": 1,
+        "explanation": "Stratifikasi sosial tertutup adalah sistem di mana mobilitas sosial antar lapisan sangat sulit atau bahkan tidak mungkin terjadi. Posisi seseorang dalam sistem ini ditentukan sejak lahir (ascribed status) dan bersifat permanen, seperti yang terjadi pada sistem kasta di India. Ini sangat berbeda dengan stratifikasi terbuka yang memungkinkan mobilitas vertikal."
+    },
+    {
+        "question": "Salah satu dampak negatif yang paling sering timbul akibat adanya stratifikasi sosial yang ekstrem dalam masyarakat adalah...",
+        "options": [
+            "Meningkatnya solidaritas antar seluruh anggota masyarakat.",
+            "Mendorong terjadinya persaingan yang sehat dan inovasi.",
+            "Munculnya kesenjangan sosial yang lebar dan potensi konflik antarkelas.",
+            "Mempercepat mobilitas sosial secara merata.",
+            "Mengurangi tingkat kemiskinan secara drastis."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Stratifikasi sosial yang terlalu ekstrem, di mana perbedaan antara lapisan atas dan bawah sangat mencolok dalam hal kekayaan, kekuasaan, atau akses sumber daya, dapat menimbulkan kesenjangan sosial yang besar. Kesenjangan ini seringkali memicu rasa ketidakadilan, kecemburuan, dan pada akhirnya berpotensi menimbulkan konflik, ketegangan, atau bahkan disintegrasi antara kelas-kelas sosial dalam masyarakat."
+    },
+    {
+        "question": "Konsep mobilitas sosial dalam sosiologi merujuk pada...",
+        "options": [
+            "Perubahan lokasi geografis individu dari satu tempat ke tempat lain.",
+            "Perubahan selera dan gaya hidup individu dari waktu ke waktu.",
+            "Perubahan atau perpindahan posisi individu atau kelompok dari satu lapisan ke lapisan lain dalam struktur sosial.",
+            "Perkembangan teknologi yang memengaruhi cara hidup masyarakat.",
+            "Pembentukan kelompok-kelompok sosial baru dalam masyarakat."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Mobilitas sosial adalah konsep kunci dalam sosiologi yang mengacu pada perpindahan individu atau kelompok dari satu posisi (status) sosial ke posisi sosial lain dalam struktur hierarkis masyarakat. Perpindahan ini bisa bersifat vertikal (naik atau turun) maupun horizontal (pindah posisi tetapi tetap dalam lapisan yang sama)."
+    },
+    {
+        "question": "Contoh yang paling tepat menunjukkan mobilitas sosial vertikal naik adalah...",
+        "options": [
+            "Seorang guru dipindahkan mengajar dari sekolah A ke sekolah B dengan jabatan yang sama.",
+            "Sebuah keluarga petani yang berhasil menyekolahkan anaknya hingga menjadi dokter.",
+            "Seorang pekerja beralih profesi dari buruh pabrik menjadi tukang ojek online.",
+            "Sebuah keluarga pindah dari desa ke kota untuk mencari kehidupan yang lebih baik.",
+            "Seorang manajer diturunkan jabatannya menjadi staf biasa."
+        ],
+        "correctAnswerIndex": 1,
+        "explanation": "Mobilitas sosial vertikal naik (social climbing) adalah perpindahan individu atau kelompok dari lapisan sosial yang lebih rendah ke lapisan sosial yang lebih tinggi. Contoh keluarga petani yang anaknya menjadi dokter menunjukkan peningkatan status sosial yang signifikan, dari status pekerjaan yang secara umum dianggap lebih rendah (petani) ke profesi yang dihormati dan berpenghasilan lebih tinggi (dokter)."
+    },
+    {
+        "question": "Dina adalah anak seorang penjual sayur di pasar tradisional. Berkat kegigihan dan beasiswa pendidikan, ia berhasil menyelesaikan kuliah di universitas ternama dan kini bekerja sebagai seorang analis keuangan di perusahaan multinasional. Saluran mobilitas sosial yang paling menonjol dalam ilustrasi Dina adalah melalui...",
+        "options": [
+            "Organisasi politik",
+            "Organisasi ekonomi",
+            "Lembaga pendidikan",
+            "Organisasi profesi",
+            "Lembaga keagamaan"
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Dalam kasus Dina, pendidikan adalah saluran utama yang memungkinkannya untuk meningkatkan status sosialnya. Dari latar belakang keluarga penjual sayur, ia menggunakan jalur pendidikan (kuliah dan beasiswa) untuk mendapatkan pengetahuan dan keterampilan yang dibutuhkan agar bisa menempati posisi yang lebih tinggi (analis keuangan) dalam struktur sosial. Lembaga pendidikan sering disebut sebagai 'tangga sosial' karena memberikan kesempatan mobilitas."
+    },
+    {
+        "question": "Salah satu dampak negatif yang mungkin terjadi akibat adanya mobilitas sosial yang cepat dan tidak terkelola dengan baik dalam masyarakat adalah...",
+        "options": [
+            "Peningkatan integrasi sosial antar lapisan masyarakat.",
+            "Mendorong persaingan yang sehat dan inovasi di bidang ekonomi.",
+            "Munculnya disorganisasi sosial, konflik antarkelas, atau stres psikologis individu.",
+            "Memperkuat solidaritas kelompok-kelompok yang ada.",
+            "Meningkatkan kualitas hidup secara merata bagi semua individu."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Meskipun mobilitas sosial memiliki dampak positif, jika terjadi terlalu cepat atau tanpa penyesuaian sosial yang memadai, dapat menimbulkan beberapa dampak negatif. Ini termasuk disorganisasi sosial (kekacauan norma), konflik antarkelas (akibat kecemburuan atau ketidakpuasan), dan stres psikologis pada individu yang mengalami perubahan status secara drastis (baik naik maupun turun) dan kesulitan beradaptasi dengan lingkungan barunya."
+    },
+    {
+        "question": "Pernyataan berikut yang paling tepat menggambarkan suatu permasalahan sosial adalah...",
+        "options": [
+            "Terjadinya fenomena gerhana bulan total yang menarik perhatian masyarakat.",
+            "Adanya perbedaan pendapat antara dua individu mengenai warna favorit.",
+            "Meningkatnya angka pengangguran terdidik yang menyebabkan keresahan dan ketidakstabilan ekonomi.",
+            "Perkembangan teknologi baru yang mempermudah komunikasi.",
+            "Variasi masakan tradisional antar daerah di Indonesia."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Permasalahan sosial adalah kondisi yang tidak diinginkan, dianggap mengganggu atau membahayakan masyarakat secara luas, dan membutuhkan upaya kolektif untuk menyelesaikannya. Meningkatnya angka pengangguran terdidik (Opsi C) adalah masalah sosial karena berdampak pada banyak individu, menyebabkan keresahan ekonomi, dan mengancam stabilitas sosial-ekonomi. Opsi lainnya adalah fenomena alam, perbedaan pribadi, atau perkembangan positif yang bukan masalah sosial."
+    },
+    {
+        "question": "Etnosentrisme dapat menjadi permasalahan sosial dalam masyarakat multikultural karena pandangan ini cenderung...",
+        "options": [
+            "Mendorong individu untuk belajar dan menghargai budaya lain.",
+            "Memperkuat rasa persatuan dan kesatuan antar berbagai kelompok budaya.",
+            "Menyebabkan munculnya prasangka, diskriminasi, dan potensi konflik antarkelompok.",
+            "Mengurangi kesenjangan ekonomi antar kelompok etnis.",
+            "Memfasilitasi pertukaran budaya yang harmonis."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Etnosentrisme adalah pandangan yang menganggap budaya sendiri sebagai patokan utama dan merendahkan budaya lain. Dalam masyarakat multikultural, etnosentrisme yang berlebihan adalah masalah karena secara inheren memicu prasangka (penilaian negatif yang tidak adil), diskriminasi (perlakuan tidak setara), dan memperbesar kemungkinan terjadinya konflik antar kelompok yang berbeda, karena kurangnya penghargaan dan pemahaman terhadap keragaman."
+    },
+    {
+        "question": "Contoh tindakan yang menunjukkan etnosentrisme sebagai permasalahan sosial dalam masyarakat multikultural adalah...",
+        "options": [
+            "Sebuah keluarga merayakan hari raya keagamaan sesuai tradisi mereka.",
+            "Komunitas seni mengadakan festival yang menampilkan tarian dari berbagai daerah.",
+            "Kelompok A menolak untuk berinteraksi dengan kelompok B karena menganggap budaya kelompok B lebih rendah dan tidak beradab.",
+            "Seorang individu mempelajari bahasa dan adat istiadat suku lain.",
+            "Pemerintah mengadopsi kebijakan yang mengakomodasi keberagaman budaya."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Etnosentrisme yang bermasalah muncul ketika ada pandangan superioritas terhadap budaya sendiri dan merendahkan budaya lain, yang kemudian memicu penolakan atau diskriminasi. Opsi C (Kelompok A menolak interaksi karena menganggap budaya Kelompok B rendah) adalah contoh paling jelas dari etnosentrisme negatif yang menimbulkan perpecahan sosial. Opsi lainnya justru menunjukkan penghargaan terhadap keberagaman atau praktik budaya pribadi yang tidak merugikan orang lain."
+    },
+    {
+        "question": "Upaya paling mendasar yang dapat dilakukan untuk mencegah munculnya permasalahan sosial akibat perbedaan budaya dalam masyarakat multikultural adalah...",
+        "options": [
+            "Membatasi interaksi antar kelompok budaya yang berbeda.",
+            "Hanya mempromosikan satu budaya dominan agar masyarakat seragam.",
+            "Memperkuat nilai-nilai toleransi, saling menghormati, dan pluralisme sejak dini.",
+            "Meniadakan perayaan hari raya keagamaan yang berbeda.",
+            "Meningkatkan persaingan antar kelompok budaya untuk mencapai keunggulan."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Pencegahan masalah sosial dalam masyarakat multikultural berakar pada pendidikan dan internalisasi nilai-nilai positif. Memperkuat toleransi (kemampuan menerima perbedaan), saling menghormati (menghargai martabat setiap individu dan budayanya), dan pluralisme (pengakuan atas keberagaman sebagai kekayaan) sejak dini adalah cara paling fundamental untuk membangun fondasi masyarakat yang harmonis dan kohesif di tengah perbedaan."
+    },
+    {
+        "question": "Upaya yang paling tepat untuk menjaga dan meningkatkan kerukunan dalam masyarakat multikultural adalah...",
+        "options": [
+            "Mengadakan kompetisi antar kelompok budaya untuk menentukan yang terbaik.",
+            "Menekankan perbedaan dan mengisolasi kelompok minoritas.",
+            "Mengadakan dialog antarumat beragama dan antar kelompok yang berbeda secara rutin.",
+            "Memaksakan budaya mayoritas kepada kelompok minoritas.",
+            "Mengurangi kegiatan sosial bersama yang melibatkan berbagai latar belakang."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Kerukunan dalam masyarakat multikultural dibangun di atas komunikasi dan pemahaman bersama. Mengadakan dialog antarumat beragama dan antar kelompok yang berbeda secara rutin (Opsi C) memungkinkan anggota masyarakat untuk saling mengenal, memahami perspektif satu sama lain, mengurangi prasangka, dan menemukan titik temu, sehingga mempererat ikatan sosial dan menjaga harmoni."
+    },
+    {
+        "question": "Sikap yang paling tepat ditunjukkan seorang individu dalam menyikapi keragaman di masyarakat multikultural adalah...",
+        "options": [
+            "Bersikap fanatik terhadap budaya sendiri dan merendahkan budaya lain.",
+            "Menghindari berinteraksi dengan orang yang berbeda latar belakang.",
+            "Mengembangkan sikap toleransi, empati, dan saling menghormati perbedaan.",
+            "Memaksakan keyakinan atau kebiasaan pribadi kepada orang lain.",
+            "Menganggap semua perbedaan sebagai sumber konflik yang harus dihilangkan."
+        ],
+        "correctAnswerIndex": 2,
+        "explanation": "Sikap yang tepat dalam menyikapi keragaman adalah mengakui, menerima, dan menghargai perbedaan sebagai bagian dari kekayaan sosial. Mengembangkan sikap toleransi (menerima adanya perbedaan), empati (memahami perasaan orang lain), dan saling menghormati adalah kunci untuk membangun interaksi yang positif, mengurangi potensi konflik, dan menciptakan masyarakat multikultural yang harmonis dan inklusif."
+    }
+
         ];
 
         // Global variables for quiz state
